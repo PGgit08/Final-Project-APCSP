@@ -1,16 +1,14 @@
 import pygame
-from globals import *
 
 class Camera:
-    def __init__(self, width, height):
-        self.camera = pygame.Rect(0, 0, width, height)
+    def __init__(self, width, height, target=None):
         self.width = width
         self.height = height
+        self.target = target
 
-    def apply(self, entity):
-        return entity.rect.move(self.camera.topleft)
-    
-    def update(self, target):
-        x = -target.rect.centerx + int(WIDTH / 2)
-        y = -target.rect.centery + int(HEIGHT / 2)
-        self.camera = pygame.Rect(x, y, self.width, self.height)
+    def apply(self, moved):
+        # moved.rect.center = (
+        #     moved.rect.x - (self.target.rect.centerx - int(self.width / 2)),
+        #     moved.rect.y - (self.target.rect.centery - int(self.height / 2))
+        # )
+        pass

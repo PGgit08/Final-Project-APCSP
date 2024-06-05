@@ -1,15 +1,20 @@
 import pygame
 import os
 import math
-from globals import enemies, enemy_bullets, players, player_bullets
+from globals import enemies, enemy_bullets, players, player_bullets, game_cam, healths
 from .bullet import Bullet
 from timer import Timer
+from sprites.healthbar import Health
+import random
 
 class Enemy(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
 
     angle = 0
     old_angle = 0
+
+    health = 40
+    max_health = 40
 
     speed = 0.15
 
@@ -30,23 +35,30 @@ class Enemy(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=self.pos)
 
+        h = Health(self)
+        healths.append(h)
+
         self.timer.reset()
 
     def create_bullet(self):
-        Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
+        Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
 
     def update(self):
         if pygame.sprite.spritecollide(self, player_bullets, True):
-            # HEALTH LOSS HERE
+            self.health -= 12
+            if (self.health <= 0):
+                self.kill()
             pass
 
         if self.timer.has_elapsed(2):
             self.create_bullet()
             self.timer.reset()
 
-        mx, my = players.sprites()[0].pos
-        dx, dy = mx - self.rect.centerx, my - self.rect.centery
-        self.angle = math.degrees(math.atan2(-dy, dx)) - 90
+
+        if (players.sprites()[0]):
+            mx, my = players.sprites()[0].pos
+            dx, dy = mx - self.rect.centerx, my - self.rect.centery
+            self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
 
         if self.old_angle != self.angle:
             self.old_angle = self.angle
@@ -56,4 +68,4 @@ class Enemy(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center=self.rect.center)
 
         self.rect.center = self.pos
-
+        game_cam.apply(self)

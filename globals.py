@@ -10,5 +10,4 @@ player_bullets = pygame.sprite.Group()
 enemy_bullets = pygame.sprite.Group()
 healths = []
 
-
 game_cam = Camera(WIDTH, HEIGHT)

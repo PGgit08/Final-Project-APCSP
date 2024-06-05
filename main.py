@@ -2,7 +2,7 @@ import os
 import pygame
 from sprites.player import Player
 from sprites.enemy import Enemy
-from sprites.health_bar import HealthBar
+# from sprites.health_bar import HealthBar
 from camera import Camera
 from globals import *
 
@@ -21,19 +21,16 @@ def update_sprites():
     enemies.update()
     player_bullets.update()
     enemy_bullets.update()
-    # game_cam.update(p, WIDTH, HEIGHT)
 
-    for i in healths:
-        i.update(game_display)
     
-    
-
 def draw_sprites():
     game_display.blit(bg, (0,0))
     players.draw(game_display)
     enemies.draw(game_display)
     player_bullets.draw(game_display)
     enemy_bullets.draw(game_display)
+    for i in healths:
+        i.draw(game_display)
 
 
 ## SETUP CODE
@@ -42,6 +39,7 @@ e = Enemy()
 e.pos.x = 100
 e.pos.y = 100
 
+game_cam.target = p
 
 while not (dead):
     for event in pygame.event.get():
@@ -60,6 +58,9 @@ while not (dead):
     #     print("BULLET(S) EXIST")
     # else:
     #     print("NO BULLET(S)")
+
+    print(            -(game_cam.target.rect.centerx - int(game_cam.width / 2)),
+            -(game_cam.target.rect.centery - int(game_cam.height / 2)))
 
     update_sprites()
     game_display.fill((0, 0, 0))
