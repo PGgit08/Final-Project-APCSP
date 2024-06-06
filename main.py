@@ -12,6 +12,7 @@ game_map = pygame.Surface((MAP_WIDTH, MAP_HEIGHT))
 
 cursor_image = pygame.image.load(os.getcwd() + "/assets/crosshair.png")
 cursor_image =  pygame.transform.scale(cursor_image, (42.5, 22.5))
+cursor_image.set_colorkey((255, 255, 255))
 
 pygame.display.set_caption("Untitled Shooter Game")
 
