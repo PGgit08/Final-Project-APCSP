@@ -8,7 +8,7 @@ class Background(pygame.sprite.Sprite):
     angle = 0
     old_angle = 0
 
-    def __init__(self):
+    def __init__(self, pos):
         super().__init__(backgrounds)
 
         self.image = pygame.image.load(os.getcwd() + "/assets/background.png")
@@ -20,6 +20,8 @@ class Background(pygame.sprite.Sprite):
         self.image = self.original_image
         self.image.set_colorkey((255, 255, 255))
         self.image = pygame.Surface.convert_alpha(self.image)
+
+        self.pos = pos
 
         self.rect = self.image.get_rect(center=self.pos)
 

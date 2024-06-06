@@ -1,6 +1,6 @@
 import pygame
 import os
-from globals import WIDTH, HEIGHT
+from globals import bound_rect
 
 class Bullet(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -30,12 +30,12 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
-        vel = self.get_direction().normalize() * 5
+        vel = self.get_direction().normalize() * 10
         
         self.pos.x += vel.x
         self.pos.y += -vel.y
 
-        if not pygame.Rect(-100, -50, WIDTH + 100, HEIGHT + 50).collidepoint(self.pos.x, self.pos.y):
+        if not bound_rect.collidepoint(self.pos.x, self.pos.y):
             self.kill()
 
         if self.old_angle != self.angle:

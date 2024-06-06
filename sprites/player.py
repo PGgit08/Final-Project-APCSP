@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from globals import players, player_bullets, enemy_bullets, game_cam, healths
+from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, bound_rect
 from .bullet import Bullet
 from sprites.healthbar import Health
 
@@ -11,7 +11,7 @@ class Player(pygame.sprite.Sprite):
     angle = 0
     old_angle = 0
 
-    speed = 0.15
+    speed = 0.8
 
     health = 100
     max_health = 100
@@ -46,6 +46,9 @@ class Player(pygame.sprite.Sprite):
             if (self.health <= 0):
                 self.kill()
 
+        if not bound_rect.collidepoint(self.pos.x, self.pos.y):
+            print("RETURN BACK TO MAP!!!")
+
         keys = pygame.key.get_pressed() 
 
         if keys[pygame.K_w]:
@@ -55,9 +58,9 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_a]:
             self.pos.x -= self.speed
         if keys[pygame.K_d]:
-            self.pos.x += self.speed       
+            self.pos.x += self.speed
 
-        mx, my = pygame.mouse.get_pos()
+        mx, my = mouse_pos()
         dx, dy = mx - self.rect.centerx, my - self.rect.centery
         self.angle = math.degrees(math.atan2(-dy, dx)) - 90
 
