@@ -46,10 +46,11 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         distance_from_player = players.sprites()[0].pos.distance_to(self.pos)
         
-        if not(distance_from_player < 180): # Move towards player
+        if not(distance_from_player < 250): # Move towards player
             direction_vector = (players.sprites()[0].pos - self.pos).normalize()
+            print(direction_vector)
 
-            self.pos += direction_vector * 0.005
+            self.pos += direction_vector * 0.25
 
         if pygame.sprite.spritecollide(self, player_bullets, True):
             self.health -= 12

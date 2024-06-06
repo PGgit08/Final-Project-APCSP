@@ -4,6 +4,7 @@ from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.background import Background
 from globals import *
+import random
 
 pygame.init()
 
@@ -37,9 +38,12 @@ def draw_sprites():
 
 ## SETUP CODE
 p = Player()
-e = Enemy()
-e.pos.x = 100
-e.pos.y = 100
+
+for i in range(30):
+    e = Enemy()
+    e.pos.x = 100
+    e.pos.y = 100
+
 
 for i in range(MAP_WIDTH // WIDTH):
     for j in range(MAP_HEIGHT // HEIGHT):
