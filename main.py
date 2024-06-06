@@ -11,6 +11,8 @@ pygame.init()
 game_display = pygame.display.set_mode((WIDTH, HEIGHT))
 bg = pygame.image.load(os.getcwd() + "/assets/background.png")
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+cursor_image = pygame.image.load(os.getcwd() + "/assets/crosshair.png")
+cursor_image =  pygame.transform.scale(cursor_image, (42.5, 22.5))
 
 pygame.display.set_caption("Untitled Shooter Game")
 
@@ -32,6 +34,9 @@ def draw_sprites():
     for i in healths:
         i.draw(game_display)
 
+    cursor_rect.center = pygame.mouse.get_pos()
+    game_display.blit(cursor_image, cursor_rect)
+
 
 ## SETUP CODE
 p = Player()
@@ -40,6 +45,9 @@ e.pos.x = 100
 e.pos.y = 100
 
 game_cam.target = p
+
+pygame.mouse.set_visible(False)
+cursor_rect = cursor_image.get_rect()
 
 while not (dead):
     for event in pygame.event.get():
@@ -59,11 +67,12 @@ while not (dead):
     # else:
     #     print("NO BULLET(S)")
 
-    print(            -(game_cam.target.rect.centerx - int(game_cam.width / 2)),
-            -(game_cam.target.rect.centery - int(game_cam.height / 2)))
+    # print(            -(game_cam.target.rect.centerx - int(game_cam.width / 2)),
+    #        -(game_cam.target.rect.centery - int(game_cam.height / 2)))
 
     update_sprites()
     game_display.fill((0, 0, 0))
 
+    
     draw_sprites()
     pygame.display.flip()

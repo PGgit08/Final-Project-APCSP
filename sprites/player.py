@@ -19,14 +19,16 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__(players)
 
-        self.image = pygame.image.load(os.getcwd() + "/assets/temp_player.png")
+        self.image = pygame.image.load(os.getcwd() + "/assets/pistol.png")
 
         # original image is a scaled down non-rotated image of the player
         self.original_image = pygame.transform.scale(self.image, (100, 150))
+        self.original_image = pygame.transform.rotate(self.original_image, 180)
         
         # reset image to the original image
         self.image = self.original_image
         self.image.set_colorkey((255, 255, 255))
+       
         self.image = pygame.Surface.convert_alpha(self.image)
 
         self.rect = self.image.get_rect(center=self.pos)
@@ -39,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), player_bullets)
 
     def update(self):
-        if pygame.sprite.spritecollide(self, enemy_bullets, True):
+        if pygame.sprite.spritecollide(self, enemy_bullets, True): # Takes damage from bullet
             self.health -= 10
             if (self.health <= 0):
                 self.kill()
