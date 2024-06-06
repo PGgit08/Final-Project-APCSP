@@ -45,8 +45,6 @@ class Player(pygame.sprite.Sprite):
             self.health -= 10
             if (self.health <= 0):
                 self.kill()
-                
-            pass
 
         keys = pygame.key.get_pressed() 
 
@@ -71,5 +69,3 @@ class Player(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center=self.rect.center)
 
         self.rect.center = self.pos
-
-        game_cam.apply(self)

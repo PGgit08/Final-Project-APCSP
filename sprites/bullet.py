@@ -31,6 +31,7 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         vel = self.get_direction().normalize() * 5
+        
         self.pos.x += vel.x
         self.pos.y += -vel.y
 

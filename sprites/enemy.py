@@ -44,11 +44,10 @@ class Enemy(pygame.sprite.Sprite):
         Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
 
     def update(self):
-        distance_from_player = math.sqrt((players.sprites()[0].pos.x - self.pos.x) ** 2 + (players.sprites()[0].pos.y - self.pos.y) ** 2)
+        distance_from_player = players.sprites()[0].pos.distance_to(self.pos)
         
         if not(distance_from_player < 180): # Move towards player
             pass 
-
 
         if pygame.sprite.spritecollide(self, player_bullets, True):
             self.health -= 12
@@ -58,7 +57,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.timer.has_elapsed(2):
             self.create_bullet()
             self.timer.reset()
-
 
         if (players.sprites()[0]):
             mx, my = players.sprites()[0].pos
@@ -72,6 +70,4 @@ class Enemy(pygame.sprite.Sprite):
             self.image = pygame.transform.rotate(self.original_image, self.angle)
             self.rect = self.image.get_rect(center=self.rect.center)
 
-
         self.rect.center = self.pos
-        game_cam.apply(self)

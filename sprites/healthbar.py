@@ -1,7 +1,6 @@
 import pygame
 from globals import healths
 
-
 class Health:
     entity: pygame.sprite.Sprite
     
@@ -9,7 +8,6 @@ class Health:
         self.entity = entity
 
     def draw(self, win):
-
         if (not self.entity.alive()):
             healths.remove(self)
 
