@@ -1,9 +1,10 @@
 import pygame
 import os
 import math
-from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, bound_rect
+from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, bound_rect, messages
 from .bullet import Bullet
 from sprites.healthbar import Health
+from timer import Timer
 
 class Player(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -15,6 +16,10 @@ class Player(pygame.sprite.Sprite):
 
     health = 100
     max_health = 100
+
+    did_click = False
+
+    timer = Timer()
 
     def __init__(self):
         super().__init__(players)
@@ -36,6 +41,8 @@ class Player(pygame.sprite.Sprite):
         h = Health(self)
         healths.append(h)
 
+        self.timer.reset()
+
 
     def create_bullet(self):
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), player_bullets)
@@ -43,13 +50,19 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         if pygame.sprite.spritecollide(self, enemy_bullets, True): # Takes damage from bullet
             self.health -= 10
-            if (self.health <= 0):
-                self.kill()
+        
+        if (self.health <= 0):
+            self.kill()
 
         if not bound_rect.collidepoint(self.pos.x, self.pos.y):
-            print("RETURN BACK TO MAP!!!")
+            self.health -= 0.1
+            messages.display_message = "GET BACK INTO THE MAP!"
+        
+        else:
+            messages.clear()
 
         keys = pygame.key.get_pressed() 
+        clicks = pygame.mouse.get_pressed()
 
         if keys[pygame.K_w]:
             self.pos.y -= self.speed
@@ -59,6 +72,13 @@ class Player(pygame.sprite.Sprite):
             self.pos.x -= self.speed
         if keys[pygame.K_d]:
             self.pos.x += self.speed
+        
+        if clicks[0] and not self.did_click:
+            self.create_bullet()
+            self.did_click = True
+        
+        else:
+            self.did_click = False
 
         mx, my = mouse_pos()
         dx, dy = mx - self.rect.centerx, my - self.rect.centery

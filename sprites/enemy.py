@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from globals import enemies, enemy_bullets, players, player_bullets, game_cam, healths
+from globals import enemies, enemy_bullets, players, player_bullets, game_cam, healths, closest
 from .bullet import Bullet
 from timer import Timer
 from sprites.healthbar import Health
@@ -44,24 +44,24 @@ class Enemy(pygame.sprite.Sprite):
         Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
 
     def update(self):
-        distance_from_player = players.sprites()[0].pos.distance_to(self.pos)
-        
-        if not(distance_from_player < 250): # Move towards player
-            direction_vector = (players.sprites()[0].pos - self.pos).normalize()
-            print(direction_vector)
-
-            self.pos += direction_vector * 0.25
-
         if pygame.sprite.spritecollide(self, player_bullets, True):
             self.health -= 12
             if (self.health <= 0):
                 self.kill()
-
+        
         if self.timer.has_elapsed(2):
             self.create_bullet()
             self.timer.reset()
 
-        if (players.sprites()[0]):
+        target = closest(self, players)
+
+        if (target):
+            distance_from_player = target.pos.distance_to(self.pos)
+            
+            if not(distance_from_player < 250): # Move towards player
+                direction_vector = (target.pos - self.pos).normalize()
+                self.pos += direction_vector * 0.25
+
             mx, my = players.sprites()[0].pos
             dx, dy = mx - self.rect.centerx, my - self.rect.centery
             self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
