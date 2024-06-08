@@ -18,8 +18,6 @@ class Enemy(pygame.sprite.Sprite):
 
     speed = 0.15
 
-    timer = Timer()
-
     def __init__(self):
         super().__init__(enemies)
 
@@ -38,6 +36,9 @@ class Enemy(pygame.sprite.Sprite):
         h = Health(self)
         healths.append(h)
 
+        self.e = random.randint(1, 100000)
+        self.timer = Timer()
+
         self.timer.reset()
 
     def create_bullet(self):
@@ -48,10 +49,6 @@ class Enemy(pygame.sprite.Sprite):
             self.health -= 12
             if (self.health <= 0):
                 self.kill()
-        
-        if self.timer.has_elapsed(2):
-            self.create_bullet()
-            self.timer.reset()
 
         target = closest(self, players)
 
@@ -65,6 +62,10 @@ class Enemy(pygame.sprite.Sprite):
             mx, my = players.sprites()[0].pos
             dx, dy = mx - self.rect.centerx, my - self.rect.centery
             self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
+
+            if self.timer.has_elapsed(1):
+                self.create_bullet()
+                self.timer.reset()
 
         if self.old_angle != self.angle:
             self.old_angle = self.angle

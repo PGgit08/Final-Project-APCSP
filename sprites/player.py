@@ -17,9 +17,9 @@ class Player(pygame.sprite.Sprite):
     health = 100
     max_health = 100
 
-    did_click = False
-
     timer = Timer()
+
+    mouse_clicked = False
 
     def __init__(self):
         super().__init__(players)
@@ -45,6 +45,9 @@ class Player(pygame.sprite.Sprite):
 
 
     def create_bullet(self):
+        if self.mouse_clicked:
+            return
+
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), player_bullets)
 
     def update(self):
@@ -56,13 +59,13 @@ class Player(pygame.sprite.Sprite):
 
         if not bound_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
-            messages.display_message = "GET BACK INTO THE MAP!"
+            messages.display_message = "GET BACK INTO THE MAP! YOUR HEALTH IS: " + str(int(self.health))
         
         else:
             messages.clear()
 
         keys = pygame.key.get_pressed() 
-        clicks = pygame.mouse.get_pressed()
+        mouse = pygame.mouse.get_pressed()
 
         if keys[pygame.K_w]:
             self.pos.y -= self.speed
@@ -72,13 +75,13 @@ class Player(pygame.sprite.Sprite):
             self.pos.x -= self.speed
         if keys[pygame.K_d]:
             self.pos.x += self.speed
-        
-        if clicks[0] and not self.did_click:
+
+        if mouse[0]:
             self.create_bullet()
-            self.did_click = True
-        
+            self.mouse_clicked = True
+
         else:
-            self.did_click = False
+            self.mouse_clicked = False
 
         mx, my = mouse_pos()
         dx, dy = mx - self.rect.centerx, my - self.rect.centery
