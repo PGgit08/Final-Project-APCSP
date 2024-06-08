@@ -7,6 +7,7 @@ class Health:
     def __init__(self, entity):
         self.entity = entity
 
+    # draws the healthbar above the following entity
     def draw(self, win):
         if (not self.entity.alive()):
             healths.remove(self)

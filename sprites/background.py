@@ -26,10 +26,10 @@ class Background(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
+        # rotation code
         if self.old_angle != self.angle:
             self.old_angle = self.angle
 
-            # transform original image to correct rotation
             self.image = pygame.transform.rotate(self.original_image, self.angle)
             self.rect = self.image.get_rect(center=self.rect.center)
 

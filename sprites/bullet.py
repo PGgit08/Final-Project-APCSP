@@ -1,6 +1,6 @@
 import pygame
 import os
-from globals import bound_rect
+from globals import map_rect
 
 class Bullet(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -8,6 +8,7 @@ class Bullet(pygame.sprite.Sprite):
     angle = 0
     old_angle = 0
 
+    # direction vector of this bullet (velocity)
     def get_direction(self) -> pygame.Vector2:
         return pygame.Vector2(0, 1).rotate(self.angle)
 
@@ -26,22 +27,23 @@ class Bullet(pygame.sprite.Sprite):
         self.image = self.original_image
         self.image.set_colorkey((255, 255, 255))
         self.image = pygame.Surface.convert_alpha(self.image)
-
         self.rect = self.image.get_rect(center=self.pos)
 
     def update(self):
+        # constant movement by direction vector code
         vel = self.get_direction().normalize() * 10
         
         self.pos.x += vel.x
         self.pos.y += -vel.y
 
-        if not bound_rect.collidepoint(self.pos.x, self.pos.y):
+        # health damage code
+        if not map_rect.collidepoint(self.pos.x, self.pos.y):
             self.kill()
 
+        # rotation code
         if self.old_angle != self.angle:
             self.old_angle = self.angle
 
-            # transform original image to correct rotation
             self.image = pygame.transform.rotate(self.original_image, self.angle)
             self.rect = self.image.get_rect(center=self.rect.center)
 

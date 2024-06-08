@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, bound_rect, messages
+from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, map_rect, messages
 from .bullet import Bullet
 from sprites.healthbar import Health
 from timer import Timer
@@ -30,20 +30,20 @@ class Player(pygame.sprite.Sprite):
         self.original_image = pygame.transform.scale(self.image, (100, 150))
         self.original_image = pygame.transform.rotate(self.original_image, 180)
         
-        # reset image to the original image
+        # set image to the original image
         self.image = self.original_image
         self.image.set_colorkey((255, 255, 255))
-       
         self.image = pygame.Surface.convert_alpha(self.image)
 
         self.rect = self.image.get_rect(center=self.pos)
 
+        # create healthbar for this player
         h = Health(self)
         healths.append(h)
 
         self.timer.reset()
 
-
+    # creates a new bullet
     def create_bullet(self):
         if self.mouse_clicked:
             return
@@ -51,19 +51,21 @@ class Player(pygame.sprite.Sprite):
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), player_bullets)
 
     def update(self):
+        ## health damage code
         if pygame.sprite.spritecollide(self, enemy_bullets, True): # Takes damage from bullet
             self.health -= 10
         
         if (self.health <= 0):
             self.kill()
 
-        if not bound_rect.collidepoint(self.pos.x, self.pos.y):
+        if not map_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
             messages.display_message = "GET BACK INTO THE MAP! YOUR HEALTH IS: " + str(int(self.health))
         
         else:
             messages.clear()
 
+        ## input code
         keys = pygame.key.get_pressed() 
         mouse = pygame.mouse.get_pressed()
 
@@ -83,6 +85,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.mouse_clicked = False
 
+        ## look at mouse
         mx, my = mouse_pos()
         dx, dy = mx - self.rect.centerx, my - self.rect.centery
         self.angle = math.degrees(math.atan2(-dy, dx)) - 90

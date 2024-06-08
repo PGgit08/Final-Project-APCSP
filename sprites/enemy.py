@@ -30,26 +30,26 @@ class Enemy(pygame.sprite.Sprite):
         self.image = self.original_image
         self.image.set_colorkey((255, 255, 255))
         self.image = pygame.Surface.convert_alpha(self.image)
-
         self.rect = self.image.get_rect(center=self.pos)
 
+        # create health bar for this enemy
         h = Health(self)
         healths.append(h)
 
-        self.e = random.randint(1, 100000)
         self.timer = Timer()
-
         self.timer.reset()
 
     def create_bullet(self):
         Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
 
     def update(self):
+        ## health damage code
         if pygame.sprite.spritecollide(self, player_bullets, True):
             self.health -= 12
             if (self.health <= 0):
                 self.kill()
 
+        ## find target player
         target = closest(self, players)
 
         if (target):
@@ -67,6 +67,10 @@ class Enemy(pygame.sprite.Sprite):
                 self.create_bullet()
                 self.timer.reset()
 
+        else:
+            self.angle += 0.3
+
+        ## angle code
         if self.old_angle != self.angle:
             self.old_angle = self.angle
 

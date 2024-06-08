@@ -7,6 +7,7 @@ class Camera:
 
         self.target = target
     
+    # the offsets to move everything by based on the camera's position
     def offsets(self) -> pygame.Vector2:
         return pygame.Vector2(
             - (self.target.pos.x - self.width / 2),
