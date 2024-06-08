@@ -63,12 +63,12 @@ class Enemy(pygame.sprite.Sprite):
             dx, dy = mx - self.rect.centerx, my - self.rect.centery
             self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
 
-            if self.timer.has_elapsed(1):
+            if self.timer.has_elapsed(1) and distance_from_player < 300:
                 self.create_bullet()
                 self.timer.reset()
 
         else:
-            self.angle += 0.3
+            self.angle += random.randint(0, 1)
 
         ## angle code
         if self.old_angle != self.angle:
