@@ -50,7 +50,13 @@ for i in range(globals.MAP_WIDTH // globals.WIDTH):
 p = Player()
 globals.game_cam.target = p
 enemy_spawner = Timer()
+enemy_spawner.lock()
+
 pygame.mouse.set_visible(False)
+
+globals.messages.game_status = """
+Welcome to (name)! WASD To Move. 
+"""
 
 while not (dead):
     for event in pygame.event.get():
@@ -75,7 +81,7 @@ while not (dead):
     if not p.alive():
         globals.messages.warning = ""
         globals.messages.game_status = "YOU DIED GAME OVER!"
-        globals.enemies.empty()
+        enemy_spawner.lock()
 
     # update all sprites
     update_sprites()
