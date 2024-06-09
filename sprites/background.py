@@ -1,6 +1,6 @@
 import pygame
 import os
-from globals import WIDTH, HEIGHT, backgrounds
+from globals import globals
 
 class Background(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -9,12 +9,12 @@ class Background(pygame.sprite.Sprite):
     old_angle = 0
 
     def __init__(self, pos):
-        super().__init__(backgrounds)
+        super().__init__(globals.backgrounds)
 
         self.image = pygame.image.load(os.getcwd() + "/assets/background.png")
 
         # original image is a scaled down non-rotated image of the background
-        self.original_image = pygame.transform.scale(self.image, (WIDTH, HEIGHT))
+        self.original_image = pygame.transform.scale(self.image, (globals.WIDTH, globals.HEIGHT))
         
         # reset image to the original image
         self.image = self.original_image

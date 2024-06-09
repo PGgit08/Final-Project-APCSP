@@ -1,5 +1,5 @@
 import pygame
-from globals import healths
+from globals import globals
 
 class Health:
     entity: pygame.sprite.Sprite
@@ -10,7 +10,7 @@ class Health:
     # draws the healthbar above the following entity
     def draw(self, win):
         if (not self.entity.alive()):
-            healths.remove(self)
+            globals.healths.remove(self)
 
         if not (self.entity.health < self.entity.max_health):
             return

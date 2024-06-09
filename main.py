@@ -1,18 +1,17 @@
-import os
 import pygame
-from sprites.player import Player
-from sprites.enemy import Enemy
-from sprites.background import Background
-from globals import *
-import random
-from timer import Timer
 
 pygame.init()
 
-game_display = pygame.display.set_mode((WIDTH, HEIGHT))
-game_map = pygame.Surface((MAP_WIDTH, MAP_HEIGHT))
+import os
+from sprites.player import Player
+from sprites.enemy import Enemy
+from sprites.background import Background
+from globals import globals
+import random
+from timer import Timer
 
-hud_font = pygame.font.SysFont('Impact', 36)
+game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
+game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
 
 cursor_image = pygame.image.load(os.getcwd() + "/assets/crosshair.png")
 cursor_image =  pygame.transform.scale(cursor_image, (42.5, 22.5))
@@ -24,32 +23,32 @@ dead = False
 
 # to update all sprites
 def update_sprites():
-    backgrounds.update()
-    players.update()
-    enemies.update()
-    player_bullets.update()
-    enemy_bullets.update()
+    globals.backgrounds.update()
+    globals.players.update()
+    globals.enemies.update()
+    globals.player_bullets.update()
+    globals.enemy_bullets.update()
 
 # to draw all sprites
 def draw_sprites():
-    backgrounds.draw(game_map)
-    players.draw(game_map)
-    enemies.draw(game_map)
-    player_bullets.draw(game_map)
-    enemy_bullets.draw(game_map)
+    globals.backgrounds.draw(game_map)
+    globals.players.draw(game_map)
+    globals.enemies.draw(game_map)
+    globals.player_bullets.draw(game_map)
+    globals.enemy_bullets.draw(game_map)
     
-    for i in healths:
+    for i in globals.healths:
         i.draw(game_map)
 
 ## SETUP CODE
-for i in range(MAP_WIDTH // WIDTH):
-    for j in range(MAP_HEIGHT // HEIGHT):
+for i in range(globals.MAP_WIDTH // globals.WIDTH):
+    for j in range(globals.MAP_HEIGHT // globals.HEIGHT):
         # generates 4 backgrounds
-        Background(((i * WIDTH) + (WIDTH / 2), (j * HEIGHT) + (HEIGHT / 2)))
+        Background(((i * globals.WIDTH) + (globals.WIDTH / 2), (j * globals.HEIGHT) + (globals.HEIGHT / 2)))
 
 # creates this computer's player and attaches the camera to it
 p = Player()
-game_cam.target = p
+globals.game_cam.target = p
 enemy_spawner = Timer()
 pygame.mouse.set_visible(False)
 
@@ -66,11 +65,17 @@ while not (dead):
     if (enemy_spawner.has_elapsed(5)):
         e = Enemy()
         e.pos = pygame.Vector2(
-            random.randint(0, MAP_WIDTH),
-            random.randint(0, MAP_HEIGHT)
+            random.randint(0, globals.MAP_WIDTH),
+            random.randint(0, globals.MAP_HEIGHT)
         )
 
         enemy_spawner.reset()
+
+    # main player life status
+    if not p.alive():
+        globals.messages.warning = ""
+        globals.messages.game_status = "YOU DIED GAME OVER!"
+        globals.enemies.empty()
 
     # update all sprites
     update_sprites()
@@ -80,7 +85,7 @@ while not (dead):
     draw_sprites()
 
     # draw game map onto game display based on cam position
-    cam_offsets = game_cam.offsets()
+    cam_offsets = globals.game_cam.offsets()
     game_display.fill((128, 128, 128))
     game_display.blit(game_map, cam_offsets)
 
@@ -89,10 +94,8 @@ while not (dead):
     cursor_rect.center = pygame.mouse.get_pos()
     game_display.blit(cursor_image, cursor_rect)
 
-    # for display message
-    text = hud_font.render(messages.display_message, True, (247, 244, 47))
-    text_mask = hud_font.render(messages.display_message, True, (0, 0, 0))
-    game_display.blit(text_mask, (WIDTH // 2 - 220, HEIGHT // 2 + 100))
-    game_display.blit(text, (WIDTH // 2 - 217, HEIGHT // 2 + 102))
+    # for display messages
+    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + "(unknown)"
+    globals.messages.draw(game_display)
 
     pygame.display.flip()

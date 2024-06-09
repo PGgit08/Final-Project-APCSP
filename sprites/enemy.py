@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from globals import enemies, enemy_bullets, players, player_bullets, game_cam, healths, closest
+from globals import globals
 from .bullet import Bullet
 from timer import Timer
 from sprites.healthbar import Health
@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
     speed = 0.15
 
     def __init__(self):
-        super().__init__(enemies)
+        super().__init__(globals.enemies)
 
         self.image = pygame.image.load(os.getcwd() + "/assets/temp_player.png")
 
@@ -34,23 +34,25 @@ class Enemy(pygame.sprite.Sprite):
 
         # create health bar for this enemy
         h = Health(self)
-        healths.append(h)
+        globals.healths.append(h)
 
         self.timer = Timer()
         self.timer.reset()
 
     def create_bullet(self):
-        Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), enemy_bullets)
+        Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), globals.enemy_bullets)
 
     def update(self):
         ## health damage code
-        if pygame.sprite.spritecollide(self, player_bullets, True):
+        if pygame.sprite.spritecollide(self, globals.player_bullets, True):
             self.health -= 12
-            if (self.health <= 0):
-                self.kill()
+        
+        if (self.health <= 0):
+            globals.score += 1
+            self.kill()
 
         ## find target player
-        target = closest(self, players)
+        target = globals.closest(self, globals.players)
 
         if (target):
             distance_from_player = target.pos.distance_to(self.pos)
@@ -59,7 +61,7 @@ class Enemy(pygame.sprite.Sprite):
                 direction_vector = (target.pos - self.pos).normalize()
                 self.pos += direction_vector * 0.25
 
-            mx, my = players.sprites()[0].pos
+            mx, my = globals.players.sprites()[0].pos
             dx, dy = mx - self.rect.centerx, my - self.rect.centery
             self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
 

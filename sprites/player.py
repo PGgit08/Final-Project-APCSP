@@ -1,7 +1,7 @@
 import pygame
 import os
 import math
-from globals import players, player_bullets, enemy_bullets, healths, mouse_pos, map_rect, messages
+from globals import globals
 from .bullet import Bullet
 from sprites.healthbar import Health
 from timer import Timer
@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
     mouse_clicked = False
 
     def __init__(self):
-        super().__init__(players)
+        super().__init__(globals.players)
 
         self.image = pygame.image.load(os.getcwd() + "/assets/pistol.png")
 
@@ -39,7 +39,7 @@ class Player(pygame.sprite.Sprite):
 
         # create healthbar for this player
         h = Health(self)
-        healths.append(h)
+        globals.healths.append(h)
 
         self.timer.reset()
 
@@ -48,22 +48,22 @@ class Player(pygame.sprite.Sprite):
         if self.mouse_clicked:
             return
 
-        Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), player_bullets)
+        Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
 
     def update(self):
         ## health damage code
-        if pygame.sprite.spritecollide(self, enemy_bullets, True): # Takes damage from bullet
+        if pygame.sprite.spritecollide(self, globals.enemy_bullets, True): # Takes damage from bullet
             self.health -= 10
         
         if (self.health <= 0):
             self.kill()
 
-        if not map_rect.collidepoint(self.pos.x, self.pos.y):
+        if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
-            messages.display_message = "GET BACK INTO THE MAP! YOUR HEALTH IS: " + str(int(self.health))
+            globals.messages.warning = "GET BACK INTO THE MAP! YOUR HEALTH IS: " + str(int(self.health))
         
         else:
-            messages.clear()
+            globals.messages.warning = ""
 
         ## input code
         keys = pygame.key.get_pressed() 
@@ -86,7 +86,7 @@ class Player(pygame.sprite.Sprite):
             self.mouse_clicked = False
 
         ## look at mouse
-        mx, my = mouse_pos()
+        mx, my = globals.mouse_pos()
         dx, dy = mx - self.rect.centerx, my - self.rect.centery
         self.angle = math.degrees(math.atan2(-dy, dx)) - 90
 

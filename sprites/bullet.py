@@ -1,6 +1,6 @@
 import pygame
 import os
-from globals import map_rect
+from globals import globals
 
 class Bullet(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -37,7 +37,7 @@ class Bullet(pygame.sprite.Sprite):
         self.pos.y += -vel.y
 
         # health damage code
-        if not map_rect.collidepoint(self.pos.x, self.pos.y):
+        if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.kill()
 
         # rotation code
