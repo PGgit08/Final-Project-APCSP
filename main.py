@@ -1,4 +1,5 @@
 import pygame
+import math
 
 pygame.init()
 
@@ -9,6 +10,7 @@ from sprites.background import Background
 from globals import globals
 import random
 from timer import Timer
+from textwrap import fill
 
 game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
 game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
@@ -19,7 +21,13 @@ cursor_image.set_colorkey((255, 255, 255))
 
 pygame.display.set_caption("Untitled Shooter Game")
 
+high_score = int(open("high_score.txt", "r").readlines()[0])
+
 dead = False
+
+# returns the enemy spawnrate depending on the level chosen, current health, and current score
+def enemy_spawnrate(level, health, score):
+    return 5
 
 # to update all sprites
 def update_sprites():
@@ -54,9 +62,9 @@ enemy_spawner.lock()
 
 pygame.mouse.set_visible(False)
 
-globals.messages.game_status = """
-Welcome to (name)! WASD To Move. 
-"""
+globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
+
+level = None
 
 while not (dead):
     for event in pygame.event.get():
@@ -66,25 +74,38 @@ while not (dead):
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
                 dead = True
-    
-    # enemy spawning system
-    if (enemy_spawner.has_elapsed(5)):
-        e = Enemy()
-        e.pos = pygame.Vector2(
-            random.randint(0, globals.MAP_WIDTH),
-            random.randint(0, globals.MAP_HEIGHT)
-        )
-
-        enemy_spawner.reset()
+            if level == None:
+                if event.key == pygame.K_1:
+                    level = 1
+                if event.key == pygame.K_2:
+                    level = 2
+                if event.key == pygame.K_3:
+                    level = 3
 
     # main player life status
     if not p.alive():
+        level = None
         globals.messages.warning = ""
         globals.messages.game_status = "YOU DIED GAME OVER!"
         enemy_spawner.lock()
 
     # update all sprites
-    update_sprites()
+    if level != None:
+        enemy_spawner.unlock()
+
+        # enemy spawning system
+        if (enemy_spawner.has_elapsed(enemy_spawnrate(level, p.health, globals.score))):
+            e = Enemy()
+            e.pos = pygame.Vector2(
+                random.randint(0, globals.MAP_WIDTH),
+                random.randint(0, globals.MAP_HEIGHT)
+            )
+
+            enemy_spawner.reset()
+
+        globals.messages.game_status = ""
+
+        update_sprites()
 
     # clear game map and draw on it
     game_map.fill((0, 0, 0))
@@ -101,7 +122,11 @@ while not (dead):
     game_display.blit(cursor_image, cursor_rect)
 
     # for display messages
-    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + "(unknown)"
+    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(level)
     globals.messages.draw(game_display)
 
     pygame.display.flip()
+
+if globals.score > high_score:
+    open("high_score.txt", "w").close()
+    open("high_score.txt", "w").write(str(globals.score))

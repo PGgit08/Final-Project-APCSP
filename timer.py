@@ -10,6 +10,10 @@ class Timer:
     # stops the timer completely
     def lock(self):
         self.locked = True
+    
+    # starts the timer again
+    def unlock(self):
+        self.locked = False
 
     # reset the timer
     def reset(self):
