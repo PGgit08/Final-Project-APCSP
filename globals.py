@@ -18,6 +18,7 @@ class globals:
     enemies = pygame.sprite.Group()
     player_bullets = pygame.sprite.Group()
     enemy_bullets = pygame.sprite.Group()
+    pickups = pygame.sprite.Group()
     healths = []
 
     # the amount of enemies killed

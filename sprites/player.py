@@ -50,12 +50,29 @@ class Player(pygame.sprite.Sprite):
 
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
 
+    # when the player picks up a pickup
+    def picked_up(self, t):
+        if t == "coin":
+            globals.score += 1
+
+        if t == "health":
+            self.health += 1
+
+        if t == "shotgun":
+            pass
+        
+        if t == "pistol":
+            pass
+
+
     def update(self):
         ## health damage code
         if pygame.sprite.spritecollide(self, globals.enemy_bullets, True): # Takes damage from bullet
             self.health -= 10
+            pass
         
         if (self.health <= 0):
+            print("DIED")
             self.kill()
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):

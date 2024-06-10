@@ -10,7 +10,6 @@ from sprites.background import Background
 from globals import globals
 import random
 from timer import Timer
-from textwrap import fill
 
 game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
 game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
@@ -26,8 +25,8 @@ high_score = int(open("high_score.txt", "r").readlines()[0])
 dead = False
 
 # returns the enemy spawnrate depending on the level chosen, current health, and current score
-def enemy_spawnrate(level, health, score):
-    return 5
+def enemy_spawnrate(level, score):
+    return 2
 
 # to update all sprites
 def update_sprites():
@@ -36,6 +35,7 @@ def update_sprites():
     globals.enemies.update()
     globals.player_bullets.update()
     globals.enemy_bullets.update()
+    globals.pickups.update()
 
 # to draw all sprites
 def draw_sprites():
@@ -44,6 +44,7 @@ def draw_sprites():
     globals.enemies.draw(game_map)
     globals.player_bullets.draw(game_map)
     globals.enemy_bullets.draw(game_map)
+    globals.pickups.draw(game_map)
     
     for i in globals.healths:
         i.draw(game_map)
@@ -59,6 +60,8 @@ p = Player()
 globals.game_cam.target = p
 enemy_spawner = Timer()
 enemy_spawner.lock()
+health_spawner = Timer()
+health_spawner.lock()
 
 pygame.mouse.set_visible(False)
 
@@ -92,9 +95,10 @@ while not (dead):
     # update all sprites
     if level != None:
         enemy_spawner.unlock()
+        health_spawner.unlock()
 
         # enemy spawning system
-        if (enemy_spawner.has_elapsed(enemy_spawnrate(level, p.health, globals.score))):
+        if (enemy_spawner.has_elapsed(enemy_spawnrate(level, p.health))):
             e = Enemy()
             e.pos = pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
@@ -102,6 +106,12 @@ while not (dead):
             )
 
             enemy_spawner.reset()
+
+        if (health_spawner.has_elapsed(10)): # TODO: actually make the medkit image
+            h = Pickup("/assets/medkit.png", "health", pygame.Vector2(
+                random.randint(0, globals.MAP_WIDTH),
+                random.randint(0, globals.MAP_HEIGHT)
+            ))
 
         globals.messages.game_status = ""
 

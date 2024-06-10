@@ -6,6 +6,7 @@ from .bullet import Bullet
 from timer import Timer
 from sprites.healthbar import Health
 import random
+from .pickup import Pickup
 
 class Enemy(pygame.sprite.Sprite):
     pos = pygame.Vector2(0, 0)
@@ -48,8 +49,9 @@ class Enemy(pygame.sprite.Sprite):
             self.health -= 12
         
         if (self.health <= 0):
-            globals.score += 1
             self.kill()
+            coin_pos = pygame.Vector2(self.pos.x, self.pos.y)
+            Pickup("/assets/coin.png", "coin", coin_pos)
 
         ## find target player
         target = globals.closest(self, globals.players)
