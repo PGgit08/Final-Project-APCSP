@@ -22,23 +22,13 @@ class Player(pygame.sprite.Sprite):
     mouse_clicked = False
 
     gun = "pistol"
-    image_path = ""
+
+    original_image = None
 
     def __init__(self):
         super().__init__(globals.players)
 
-        self.image = pygame.image.load(os.getcwd() + "/assets/pistol.png")
-
-        # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (100, 150))
-        self.original_image = pygame.transform.rotate(self.original_image, 180)
-        
-        # set image to the original image
-        self.image = self.original_image
-        self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.Surface.convert_alpha(self.image)
-
-        self.rect = self.image.get_rect(center=self.pos)
+        self.change_gun(self.gun)
 
         # create healthbar for this player
         h = Health(self)
@@ -55,7 +45,7 @@ class Player(pygame.sprite.Sprite):
 
     # change the image for the player
     def change_image(self, image_path):
-        self.image = pygame.image.load(os.getcwd() + "/assets/pistol.png")
+        self.image = pygame.image.load(os.getcwd() + image_path)
 
         # original image is a scaled down non-rotated image of the player
         self.original_image = pygame.transform.scale(self.image, (100, 150))
