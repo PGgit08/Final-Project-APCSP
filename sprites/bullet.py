@@ -4,12 +4,16 @@ from globals import globals
 from .base_sprite import BaseSprite
 
 class Bullet(BaseSprite):
+    type = None
+
     # direction vector of this bullet (velocity)
     def get_direction(self) -> pygame.Vector2:
         return pygame.Vector2(0, 1).rotate(self.angle)
 
-    def __init__(self, angle, pos, group):
+    def __init__(self, angle, pos, type, group):
         super().__init__(group)
+
+        self.type = type
 
         self.pos = pos
         self.angle = angle

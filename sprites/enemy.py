@@ -11,20 +11,37 @@ from .base_sprite import BaseSprite
 
 class Enemy(BaseSprite):
     health = 40
-    max_health = globals.ENEMY_MAX_HEALTH
+    max_health = 40
 
     speed = 0.15
 
-    def __init__(self, pos):
+    gun = None
+
+    def __init__(self, pos, gun="pistol"):
         super().__init__(globals.enemies)
 
         self.pos = pos
 
         self.width = 100
-        self.height = 150
         self.offset_angle = 180
 
-        self.change_image("/assets/enemies/pistol_enemy.png")
+        self.gun = gun
+
+        if self.gun == "pistol":
+            self.height = 150
+            self.speed = 0.4
+            self.max_health = 40
+
+            self.change_image("/assets/enemies/pistol_enemy.png")
+        
+        if self.gun == "shotgun":
+            self.height = 180
+            self.speed = 0.04
+            self.max_health = 120
+
+            self.change_image("/assets/enemies/shotgun_enemy.png")
+
+        self.health = self.max_health
 
         # create health bar for this enemy
         h = Health(self)
@@ -34,12 +51,21 @@ class Enemy(BaseSprite):
         self.timer.reset()
 
     def create_bullet(self):
-        Bullet(self.angle + random.randint(-30, 30), pygame.Vector2(self.pos.x, self.pos.y), globals.enemy_bullets)
+        if self.gun == "pistol":
+            Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.enemy_bullets)
+            
+        elif self.gun == "shotgun":
+            for i in range(5):
+                offset = random.randint(-25, 25)
+                Bullet(self.angle + offset, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.enemy_bullets)
 
     def update(self):
         ## health damage code
-        if pygame.sprite.spritecollide(self, globals.player_bullets, True):
-            self.health -= 12
+        hit_bullets = list(map(lambda b: b.type, pygame.sprite.spritecollide(self, globals.player_bullets, True)))
+        
+        if hit_bullets: # Takes damage from bullet
+            if "pistol" in hit_bullets: self.health -= 12
+            else: self.health -= 6
         
         if (self.health <= 0):
             self.kill()

@@ -10,6 +10,7 @@ from sprites.pickup import Pickup
 from globals import globals
 import random
 from timer import Timer
+import time
 
 game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
 game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
@@ -56,9 +57,10 @@ p = Player()
 globals.game_cam.target = p
 
 # create all timers
+start_time = time.time()
+
 enemy_spawner = Timer()
 enemy_spawner.lock()
-enemy_countdown = 5
 
 health_spawner = Timer()
 health_spawner.lock()
@@ -74,6 +76,7 @@ pygame.mouse.set_visible(False)
 globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
 
 level = None
+enemy_countdown = 5 - ((time.time() // start_time) / 100) + (globals.score / 10)
 
 while not (dead):
     for event in pygame.event.get():
@@ -109,10 +112,12 @@ while not (dead):
             Enemy(pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
                 random.randint(0, globals.MAP_HEIGHT)
-            ))
+            ), "pistol")
 
-            enemy_countdown = 5
+            enemy_countdown = globals.clamp(5 - ((time.time() // start_time) / 100) * (1 + (level / 10)) + (globals.score / 10), 0.4, 5)
             enemy_spawner.reset()
+
+            print(enemy_countdown)
 
         # medkit spawning (only allow for 3 at a time)
         if (health_spawner.has_elapsed(health_countdown) and globals.get_pickups_by_type("health") < 3):

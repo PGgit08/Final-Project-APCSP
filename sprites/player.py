@@ -20,8 +20,6 @@ class Player(BaseSprite):
     def __init__(self):
         super().__init__(globals.players)
 
-        self.width = 100
-        self.height = 150
         self.offset_angle = 180
 
         self.change_gun("pistol")
@@ -36,12 +34,12 @@ class Player(BaseSprite):
             return
 
         if self.gun == "pistol":
-            Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+            Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.player_bullets)
             
         elif self.gun == "shotgun":
             for i in range(5):
                 offset = random.randint(-25, 25)
-                Bullet(self.angle + offset, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+                Bullet(self.angle + offset, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.player_bullets)
                    
 
     # change the gun for the player
@@ -50,9 +48,11 @@ class Player(BaseSprite):
 
         if self.gun == "pistol":
             self.height = 150
+            self.speed = 0.80
             self.change_image("/assets/players/pistol_player.png")
         if self.gun == "shotgun":
             self.height = 190
+            self.speed = 0.50
             self.change_image("/assets/players/shotgun_player.png")
 
     # when the player picks up a pickup
@@ -75,9 +75,11 @@ class Player(BaseSprite):
 
     def update(self):
         ## health damage code
-        if pygame.sprite.spritecollide(self, globals.enemy_bullets, True): # Takes damage from bullet
-            self.health -= 10
-            pass
+        hit_bullets = list(map(lambda b: b.type, pygame.sprite.spritecollide(self, globals.enemy_bullets, True)))
+
+        if hit_bullets: # Takes damage from bullet
+            if "pistol" in hit_bullets: self.health -= 10 
+            else: self.health -= 5
         
         if (self.health <= 0):
             self.kill()

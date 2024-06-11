@@ -1,6 +1,7 @@
 import pygame
 from camera import Camera
 from messages import Messages
+import math
 
 # all global variables are in this class
 class globals:
@@ -23,7 +24,6 @@ class globals:
 
     # max healths
     PLAYER_MAX_HEALTH = 100
-    ENEMY_MAX_HEALTH = 40
 
     # the amount of enemies killed
     score = 0
@@ -56,3 +56,7 @@ class globals:
     # returns the amount of pickups by their type
     def get_pickups_by_type(type):
         return len(list(filter(lambda p: p.type == type, globals.pickups.sprites())))
+
+    @staticmethod
+    def clamp(val, min, max):
+        return math.max(math.min(min, val), max)
