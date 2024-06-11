@@ -18,6 +18,10 @@ class Enemy(BaseSprite):
     def __init__(self):
         super().__init__(globals.enemies)
 
+        self.width = 100
+        self.height = 150
+        self.offset_angle = 180
+
         self.change_image("/assets/enemies/pistol_enemy.png")
 
         # create health bar for this enemy
@@ -38,7 +42,7 @@ class Enemy(BaseSprite):
         if (self.health <= 0):
             self.kill()
             coin_pos = pygame.Vector2(self.pos.x, self.pos.y)
-            Pickup("/assets/coin.png", "coin", coin_pos, 100, 100)
+            Pickup("/assets/pickups/coin.png", "coin", coin_pos, 100, 100)
 
         ## find target player
         target = globals.closest(self, globals.players)

@@ -98,10 +98,10 @@ while not (dead):
     # update all sprites
     if level != None:
         enemy_spawner.unlock()
-        health_spawner.unlock()
+        # health_spawner.unlock()
 
         # enemy spawning system
-        if (enemy_spawner.has_elapsed(enemy_spawnrate(level, p.health))):
+        if (enemy_spawner.has_elapsed(0.5)):
             e = Enemy()
             e.pos = pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),

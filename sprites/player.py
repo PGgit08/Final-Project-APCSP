@@ -5,6 +5,7 @@ from globals import globals
 from .bullet import Bullet
 from .base_sprite import BaseSprite
 from sprites.healthbar import Health
+import random
 
 class Player(BaseSprite):
     speed = 0.8
@@ -14,12 +15,17 @@ class Player(BaseSprite):
 
     mouse_clicked = False
 
-    gun = None
+    gun = "pistol"
 
     def __init__(self):
         super().__init__(globals.players)
 
-        self.change_gun("pistol")
+        # self.change_gun("pistol")
+        self.width = 100
+        self.height = 150
+        self.offset_angle = 180
+
+        self.change_image("/assets/players/pistol_player.png")
 
         # create healthbar for this player
         h = Health(self)
@@ -30,7 +36,15 @@ class Player(BaseSprite):
         if self.mouse_clicked:
             return
 
-        Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+        if self.gun == "pistol":
+            print("PISTOL SPAWN")
+            Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+            
+        elif self.gun == "shotgun":
+            for i in range(5):
+                offset = random.randint(-25, 25)
+                Bullet(self.angle + offset, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+                   
 
     # change the gun for the player
     def change_gun(self, gun):

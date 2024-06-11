@@ -5,6 +5,11 @@ class Background(BaseSprite):
     def __init__(self, pos):
         super().__init__(globals.backgrounds)
 
+        self.pos = pos
+
+        self.width = globals.WIDTH
+        self.height = globals.HEIGHT
+
         self.change_image("/assets/background.png")
     
     def update(self):

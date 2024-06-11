@@ -32,8 +32,8 @@ class BaseSprite(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.getcwd() + image_path)
 
         # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (self.width, self.height))
-        self.original_image = pygame.transform.rotate(self.original_image, self.offset_angle)
+        self.original_image = pygame.transform.rotate(self.image, self.offset_angle)
+        self.original_image = pygame.transform.scale(self.original_image, (self.width, self.height))
         
         # set image to the original image
         self.image = self.original_image

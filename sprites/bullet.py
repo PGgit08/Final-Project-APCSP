@@ -11,6 +11,14 @@ class Bullet(BaseSprite):
     def __init__(self, angle, pos, group):
         super().__init__(group)
 
+        self.pos = pos
+        self.angle = angle
+
+        self.width = 15
+        self.height = 30
+
+        self.offset_angle = 90
+
         self.change_image("/assets/bullet.png")
 
     def update(self):
