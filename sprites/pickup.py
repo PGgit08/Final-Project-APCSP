@@ -13,7 +13,7 @@ class Pickup(pygame.sprite.Sprite):
     angle = 0
     old_angle = 0
 
-    def __init__(self, image_path, type, pos):
+    def __init__(self, image_path, type, pos, width, height):
         super().__init__(globals.pickups)
 
         self.pos = pos
@@ -21,7 +21,7 @@ class Pickup(pygame.sprite.Sprite):
         self.image = pygame.image.load(os.getcwd() + image_path)
 
         # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (100, 150))
+        self.original_image = pygame.transform.scale(self.image, (width, height))
         
         # reset image to the original image
         self.image = self.original_image

@@ -21,6 +21,9 @@ class Player(pygame.sprite.Sprite):
 
     mouse_clicked = False
 
+    gun = "pistol"
+    image_path = ""
+
     def __init__(self):
         super().__init__(globals.players)
 
@@ -49,6 +52,30 @@ class Player(pygame.sprite.Sprite):
             return
 
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
+
+    # change the image for the player
+    def change_image(self, image_path):
+        self.image = pygame.image.load(os.getcwd() + "/assets/pistol.png")
+
+        # original image is a scaled down non-rotated image of the player
+        self.original_image = pygame.transform.scale(self.image, (100, 150))
+        self.original_image = pygame.transform.rotate(self.original_image, 180)
+        
+        # set image to the original image
+        self.image = self.original_image
+        self.image.set_colorkey((255, 255, 255))
+        self.image = pygame.Surface.convert_alpha(self.image)
+
+        self.rect = self.image.get_rect(center=self.pos)
+
+    # change the gun for the player
+    def change_gun(self, gun):
+        self.gun = gun
+
+        if self.gun == "pistol":
+            self.change_image("/assets/pistol_player.png")
+        if self.gun == "shotgun":
+            self.change_image("/assets/shotgun_player.png")
 
     # when the player picks up a pickup
     def picked_up(self, t):

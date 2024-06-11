@@ -51,7 +51,7 @@ class Enemy(pygame.sprite.Sprite):
         if (self.health <= 0):
             self.kill()
             coin_pos = pygame.Vector2(self.pos.x, self.pos.y)
-            Pickup("/assets/coin.png", "coin", coin_pos)
+            Pickup("/assets/coin.png", "coin", coin_pos, 100, 100)
 
         ## find target player
         target = globals.closest(self, globals.players)
@@ -63,7 +63,7 @@ class Enemy(pygame.sprite.Sprite):
                 direction_vector = (target.pos - self.pos).normalize()
                 self.pos += direction_vector * 0.25
 
-            mx, my = globals.players.sprites()[0].pos
+            mx, my = target.pos
             dx, dy = mx - self.rect.centerx, my - self.rect.centery
             self.angle = (math.degrees(math.atan2(-dy, dx)) - 90) 
 

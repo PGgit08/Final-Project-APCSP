@@ -1,5 +1,4 @@
 import pygame
-import math
 
 pygame.init()
 
@@ -7,6 +6,7 @@ import os
 from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.background import Background
+from sprites.pickup import Pickup
 from globals import globals
 import random
 from timer import Timer
@@ -58,8 +58,11 @@ for i in range(globals.MAP_WIDTH // globals.WIDTH):
 # creates this computer's player and attaches the camera to it
 p = Player()
 globals.game_cam.target = p
+
+# create all timers
 enemy_spawner = Timer()
 enemy_spawner.lock()
+
 health_spawner = Timer()
 health_spawner.lock()
 
@@ -107,11 +110,11 @@ while not (dead):
 
             enemy_spawner.reset()
 
-        if (health_spawner.has_elapsed(10)): # TODO: actually make the medkit image
-            h = Pickup("/assets/medkit.png", "health", pygame.Vector2(
-                random.randint(0, globals.MAP_WIDTH),
-                random.randint(0, globals.MAP_HEIGHT)
-            ))
+        # if (health_spawner.has_elapsed(10)): # TODO: actually make the medkit image
+        #     h = Pickup("/assets/medkit.png", "health", pygame.Vector2(
+        #         random.randint(0, globals.MAP_WIDTH),
+        #         random.randint(0, globals.MAP_HEIGHT)
+        #     ))
 
         globals.messages.game_status = ""
 
