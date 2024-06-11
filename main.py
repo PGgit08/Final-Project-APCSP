@@ -66,7 +66,8 @@ health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
 
 gun_spawner = Timer()
 gun_spawner.lock()
-gun_countdown = random.randint(10, 25)
+# gun_countdown = random.randint(10, 25)
+gun_countdown = 3
 
 pygame.mouse.set_visible(False)
 
@@ -103,8 +104,8 @@ while not (dead):
         health_spawner.unlock()
         gun_spawner.unlock()
 
-        # enemy spawning
-        if (enemy_spawner.has_elapsed(enemy_countdown)):
+        # enemy spawning (only allow for 5 at a time, this could change tho)
+        if (enemy_spawner.has_elapsed(enemy_countdown) and len(globals.enemies.sprites()) < 5):
             Enemy(pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
                 random.randint(0, globals.MAP_HEIGHT)
@@ -113,10 +114,10 @@ while not (dead):
             enemy_countdown = 5
             enemy_spawner.reset()
 
-        # medkit spawning
-        if (health_spawner.has_elapsed(health_countdown)):
+        # medkit spawning (only allow for 3 at a time)
+        if (health_spawner.has_elapsed(health_countdown) and globals.get_pickups_by_type("health") < 3):
             health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
-            
+
             Pickup("/assets/pickups/medkit.png", "health", pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
                 random.randint(0, globals.MAP_HEIGHT)
@@ -125,17 +126,20 @@ while not (dead):
             health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
             health_spawner.reset()
 
-        # gun spawning
-        if (gun_spawner.has_elapsed(gun_countdown)):
+        # gun spawning (only allow for 2 guns at a time)
+        if (gun_spawner.has_elapsed(gun_countdown) and (globals.get_pickups_by_type("pistol") + globals.get_pickups_by_type("shotgun")) < 2):
             gun_countdown = random.randint(10, 25)
-            gun_type = random.choice(["pistol", "shotgun"])
+            gun = random.choice([
+                ["pistol", (100, 50)], ["shotgun", (150, 50)]
+            ])
 
-            Pickup("/assets/pickups/" + gun_type + ".png", gun_type, pygame.Vector2(
+            Pickup("/assets/pickups/" + gun[0] + ".png", gun[0], pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
                 random.randint(0, globals.MAP_HEIGHT)
-            ), 100, 100)
+            ), *gun[1])
 
-            gun_countdown = random.randint(10, 25)
+            # gun_countdown = random.randint(10, 25)
+            gun_countdown = 3
             gun_spawner.reset()
 
         globals.messages.game_status = ""

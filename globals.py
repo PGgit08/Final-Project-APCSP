@@ -51,3 +51,8 @@ class globals:
         closest = min([t for t in targets.sprites()], key=lambda t: pos.distance_to(t.pos))
 
         return closest
+
+    @staticmethod
+    # returns the amount of pickups by their type
+    def get_pickups_by_type(type):
+        return len(list(filter(lambda p: p.type == type, globals.pickups.sprites())))

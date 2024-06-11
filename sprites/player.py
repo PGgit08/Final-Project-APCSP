@@ -36,7 +36,6 @@ class Player(BaseSprite):
             return
 
         if self.gun == "pistol":
-            print("PISTOL SPAWN")
             Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
             
         elif self.gun == "shotgun":
@@ -50,8 +49,10 @@ class Player(BaseSprite):
         self.gun = gun
 
         if self.gun == "pistol":
+            self.height = 150
             self.change_image("/assets/players/pistol_player.png")
         if self.gun == "shotgun":
+            self.height = 190
             self.change_image("/assets/players/shotgun_player.png")
 
     # when the player picks up a pickup
@@ -61,15 +62,15 @@ class Player(BaseSprite):
 
         if t == "health":
             self.health += 15
-            
+
             if self.health > self.max_health:
                 self.health = self.max_health
 
         if t == "shotgun":
-            pass
+            self.change_gun("shotgun")
         
         if t == "pistol":
-            pass
+            self.change_gun("pistol")
 
 
     def update(self):
@@ -79,7 +80,6 @@ class Player(BaseSprite):
             pass
         
         if (self.health <= 0):
-            print("DIED")
             self.kill()
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):

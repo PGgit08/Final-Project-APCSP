@@ -37,8 +37,8 @@ class BaseSprite(pygame.sprite.Sprite):
         
         # set image to the original image
         self.image = self.original_image
-        # self.image.set_colorkey(self.colorkey)
-        # self.image = pygame.Surface.convert_alpha(self.image)
+        self.image.set_colorkey(self.colorkey)
+        self.image = pygame.Surface.convert_alpha(self.image)
 
         self.rect = self.image.get_rect(center=self.pos)
 

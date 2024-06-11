@@ -44,7 +44,7 @@ class Enemy(BaseSprite):
         if (self.health <= 0):
             self.kill()
             coin_pos = pygame.Vector2(self.pos.x, self.pos.y)
-            Pickup("/assets/pickups/coin.png", "coin", coin_pos, 100, 100)
+            Pickup("/assets/pickups/coin.png", "coin", coin_pos, 40, 40)
 
         ## find target player
         target = globals.closest(self, globals.players)
