@@ -1,8 +1,9 @@
-import pygame
+from .base_sprite import BaseSprite
 from globals import globals
+import pygame
 
 class Health:
-    entity: pygame.sprite.Sprite
+    entity: BaseSprite
     
     def __init__(self, entity):
         self.entity = entity

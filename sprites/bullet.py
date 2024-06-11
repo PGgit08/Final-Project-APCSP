@@ -1,13 +1,9 @@
 import pygame
 import os
 from globals import globals
+from .base_sprite import BaseSprite
 
-class Bullet(pygame.sprite.Sprite):
-    pos = pygame.Vector2(0, 0)
-
-    angle = 0
-    old_angle = 0
-
+class Bullet(BaseSprite):
     # direction vector of this bullet (velocity)
     def get_direction(self) -> pygame.Vector2:
         return pygame.Vector2(0, 1).rotate(self.angle)
@@ -15,19 +11,7 @@ class Bullet(pygame.sprite.Sprite):
     def __init__(self, angle, pos, group):
         super().__init__(group)
 
-        self.image = pygame.image.load(os.getcwd() + "/assets/bullet.png")
-
-        self.angle = angle
-        self.pos = pos
-
-        # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (100, 100))
-        
-        # reset image to the original image
-        self.image = self.original_image
-        self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.Surface.convert_alpha(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
+        self.change_image("/assets/bullet.png")
 
     def update(self):
         # constant movement by direction vector code
@@ -40,12 +24,5 @@ class Bullet(pygame.sprite.Sprite):
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.kill()
 
-        # rotation code
-        if self.old_angle != self.angle:
-            self.old_angle = self.angle
-
-            self.image = pygame.transform.rotate(self.original_image, self.angle)
-            self.rect = self.image.get_rect(center=self.rect.center)
-
-        self.rect.center = self.pos
+        self.transform()
 

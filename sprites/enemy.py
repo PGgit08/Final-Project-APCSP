@@ -7,13 +7,9 @@ from timer import Timer
 from sprites.healthbar import Health
 import random
 from .pickup import Pickup
+from .base_sprite import BaseSprite
 
-class Enemy(pygame.sprite.Sprite):
-    pos = pygame.Vector2(0, 0)
-
-    angle = 0
-    old_angle = 0
-
+class Enemy(BaseSprite):
     health = 40
     max_health = 40
 
@@ -22,16 +18,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__(globals.enemies)
 
-        self.image = pygame.image.load(os.getcwd() + "/assets/temp_player.png")
-
-        # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (100, 150))
-        
-        # reset image to the original image
-        self.image = self.original_image
-        self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.Surface.convert_alpha(self.image)
-        self.rect = self.image.get_rect(center=self.pos)
+        self.change_image("/assets/enemies/pistol_enemy.png")
 
         # create health bar for this enemy
         h = Health(self)
@@ -74,12 +61,4 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.angle += random.randint(0, 1)
 
-        ## angle code
-        if self.old_angle != self.angle:
-            self.old_angle = self.angle
-
-            # transform original image to correct rotation
-            self.image = pygame.transform.rotate(self.original_image, self.angle)
-            self.rect = self.image.get_rect(center=self.rect.center)
-
-        self.rect.center = self.pos
+        self.transform()

@@ -3,38 +3,27 @@ import os
 import math
 from globals import globals
 from .bullet import Bullet
+from .base_sprite import BaseSprite
 from sprites.healthbar import Health
-from timer import Timer
 
-class Player(pygame.sprite.Sprite):
-    pos = pygame.Vector2(0, 0)
-
-    angle = 0
-    old_angle = 0
-
+class Player(BaseSprite):
     speed = 0.8
 
     health = 100
     max_health = 100
 
-    timer = Timer()
-
     mouse_clicked = False
 
-    gun = "pistol"
-
-    original_image = None
+    gun = None
 
     def __init__(self):
         super().__init__(globals.players)
 
-        self.change_gun(self.gun)
+        self.change_gun("pistol")
 
         # create healthbar for this player
         h = Health(self)
         globals.healths.append(h)
-
-        self.timer.reset()
 
     # creates a new bullet
     def create_bullet(self):
@@ -43,29 +32,14 @@ class Player(pygame.sprite.Sprite):
 
         Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), globals.player_bullets)
 
-    # change the image for the player
-    def change_image(self, image_path):
-        self.image = pygame.image.load(os.getcwd() + image_path)
-
-        # original image is a scaled down non-rotated image of the player
-        self.original_image = pygame.transform.scale(self.image, (100, 150))
-        self.original_image = pygame.transform.rotate(self.original_image, 180)
-        
-        # set image to the original image
-        self.image = self.original_image
-        self.image.set_colorkey((255, 255, 255))
-        self.image = pygame.Surface.convert_alpha(self.image)
-
-        self.rect = self.image.get_rect(center=self.pos)
-
     # change the gun for the player
     def change_gun(self, gun):
         self.gun = gun
 
         if self.gun == "pistol":
-            self.change_image("/assets/pistol_player.png")
+            self.change_image("/assets/players/pistol_player.png")
         if self.gun == "shotgun":
-            self.change_image("/assets/shotgun_player.png")
+            self.change_image("/assets/players/shotgun_player.png")
 
     # when the player picks up a pickup
     def picked_up(self, t):
@@ -124,11 +98,4 @@ class Player(pygame.sprite.Sprite):
         dx, dy = mx - self.rect.centerx, my - self.rect.centery
         self.angle = math.degrees(math.atan2(-dy, dx)) - 90
 
-        if self.old_angle != self.angle:
-            self.old_angle = self.angle
-
-            # transform original image to correct rotation
-            self.image = pygame.transform.rotate(self.original_image, self.angle)
-            self.rect = self.image.get_rect(center=self.rect.center)
-
-        self.rect.center = self.pos
+        self.transform()
