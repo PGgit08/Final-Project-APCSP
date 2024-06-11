@@ -11,12 +11,14 @@ from .base_sprite import BaseSprite
 
 class Enemy(BaseSprite):
     health = 40
-    max_health = 40
+    max_health = globals.ENEMY_MAX_HEALTH
 
     speed = 0.15
 
-    def __init__(self):
+    def __init__(self, pos):
         super().__init__(globals.enemies)
+
+        self.pos = pos
 
         self.width = 100
         self.height = 150

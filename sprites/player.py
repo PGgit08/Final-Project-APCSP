@@ -11,21 +11,20 @@ class Player(BaseSprite):
     speed = 0.8
 
     health = 100
-    max_health = 100
-
+    max_health = globals.PLAYER_MAX_HEALTH
+    
     mouse_clicked = False
 
-    gun = "pistol"
+    gun = None
 
     def __init__(self):
         super().__init__(globals.players)
 
-        # self.change_gun("pistol")
         self.width = 100
         self.height = 150
         self.offset_angle = 180
 
-        self.change_image("/assets/players/pistol_player.png")
+        self.change_gun("pistol")
 
         # create healthbar for this player
         h = Health(self)
@@ -61,7 +60,10 @@ class Player(BaseSprite):
             globals.score += 1
 
         if t == "health":
-            self.health += 1
+            self.health += 15
+            
+            if self.health > self.max_health:
+                self.health = self.max_health
 
         if t == "shotgun":
             pass

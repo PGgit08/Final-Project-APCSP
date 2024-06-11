@@ -21,6 +21,10 @@ class globals:
     pickups = pygame.sprite.Group()
     healths = []
 
+    # max healths
+    PLAYER_MAX_HEALTH = 100
+    ENEMY_MAX_HEALTH = 40
+
     # the amount of enemies killed
     score = 0
 

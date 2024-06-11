@@ -24,10 +24,6 @@ high_score = int(open("high_score.txt", "r").readlines()[0])
 
 dead = False
 
-# returns the enemy spawnrate depending on the level chosen, current health, and current score
-def enemy_spawnrate(level, score):
-    return 2
-
 # to update all sprites
 def update_sprites():
     globals.backgrounds.update()
@@ -62,9 +58,15 @@ globals.game_cam.target = p
 # create all timers
 enemy_spawner = Timer()
 enemy_spawner.lock()
+enemy_countdown = 5
 
 health_spawner = Timer()
 health_spawner.lock()
+health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
+
+gun_spawner = Timer()
+gun_spawner.lock()
+gun_countdown = random.randint(10, 25)
 
 pygame.mouse.set_visible(False)
 
@@ -98,23 +100,43 @@ while not (dead):
     # update all sprites
     if level != None:
         enemy_spawner.unlock()
-        # health_spawner.unlock()
+        health_spawner.unlock()
+        gun_spawner.unlock()
 
-        # enemy spawning system
-        if (enemy_spawner.has_elapsed(0.5)):
-            e = Enemy()
-            e.pos = pygame.Vector2(
+        # enemy spawning
+        if (enemy_spawner.has_elapsed(enemy_countdown)):
+            Enemy(pygame.Vector2(
                 random.randint(0, globals.MAP_WIDTH),
                 random.randint(0, globals.MAP_HEIGHT)
-            )
+            ))
 
+            enemy_countdown = 5
             enemy_spawner.reset()
 
-        # if (health_spawner.has_elapsed(10)): # TODO: actually make the medkit image
-        #     h = Pickup("/assets/medkit.png", "health", pygame.Vector2(
-        #         random.randint(0, globals.MAP_WIDTH),
-        #         random.randint(0, globals.MAP_HEIGHT)
-        #     ))
+        # medkit spawning
+        if (health_spawner.has_elapsed(health_countdown)):
+            health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
+            
+            Pickup("/assets/pickups/medkit.png", "health", pygame.Vector2(
+                random.randint(0, globals.MAP_WIDTH),
+                random.randint(0, globals.MAP_HEIGHT)
+            ), 100, 100, colorkey=(0, 255, 0))
+
+            health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
+            health_spawner.reset()
+
+        # gun spawning
+        if (gun_spawner.has_elapsed(gun_countdown)):
+            gun_countdown = random.randint(10, 25)
+            gun_type = random.choice(["pistol", "shotgun"])
+
+            Pickup("/assets/pickups/" + gun_type + ".png", gun_type, pygame.Vector2(
+                random.randint(0, globals.MAP_WIDTH),
+                random.randint(0, globals.MAP_HEIGHT)
+            ), 100, 100)
+
+            gun_countdown = random.randint(10, 25)
+            gun_spawner.reset()
 
         globals.messages.game_status = ""
 
@@ -122,6 +144,7 @@ while not (dead):
 
     # clear game map and draw on it
     game_map.fill((0, 0, 0))
+
     draw_sprites()
 
     # draw game map onto game display based on cam position

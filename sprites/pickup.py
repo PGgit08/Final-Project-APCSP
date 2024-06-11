@@ -9,12 +9,13 @@ from sprites.healthbar import Health
 import random
 
 class Pickup(BaseSprite):
-    def __init__(self, image_path, type, pos, width, height):
+    def __init__(self, image_path, type, pos, width, height, colorkey=(255, 255, 255)):
         super().__init__(globals.pickups)
 
         self.pos = pos
         self.width = width
         self.height = height
+        self.colorkey = colorkey
 
         self.change_image(image_path)
 
