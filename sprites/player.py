@@ -37,6 +37,8 @@ class Player(BaseSprite):
         
         self.bullets -= 1
 
+        globals.shoot_sound.play()
+
         if self.gun == "pistol":
             Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.player_bullets)
             
@@ -85,6 +87,8 @@ class Player(BaseSprite):
         hit_bullets = list(map(lambda b: b.type, pygame.sprite.spritecollide(self, globals.enemy_bullets, True)))
 
         if hit_bullets: # Takes damage from bullet
+            globals.damage_sound.play()
+
             if "pistol" in hit_bullets: self.health -= 10 
             else: self.health -= 5
         

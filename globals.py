@@ -13,7 +13,8 @@ class globals:
     MAP_WIDTH = WIDTH * 2
     MAP_HEIGHT = HEIGHT * 2
 
-    pygame.mixer
+    shoot_sound = pygame.mixer.Sound("./assets/sounds/shoot.wav")
+    damage_sound = pygame.mixer.Sound("./assets/sounds/damage.wav")
 
     # all sprite groups
     backgrounds = pygame.sprite.Group()
@@ -36,7 +37,6 @@ class globals:
 
     # a rect the size of the game map for collision and etc
     map_rect = pygame.Rect(0, 0, MAP_WIDTH, MAP_HEIGHT)
-
 
     # the difficulty the game is currently at [1, 10]
     difficulty_change = 1

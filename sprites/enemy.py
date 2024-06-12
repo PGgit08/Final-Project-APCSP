@@ -51,6 +51,8 @@ class Enemy(BaseSprite):
         self.timer.reset()
 
     def create_bullet(self):
+        globals.shoot_sound.play()
+
         if self.gun == "pistol":
             Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.enemy_bullets)
             
