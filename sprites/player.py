@@ -60,14 +60,14 @@ class Player(BaseSprite):
 
         if self.gun == "shotgun":
             self.height = 190
-            self.speed = 0.50
+            self.speed = 0.60
             self.bullets = 8
             self.change_image("/assets/players/shotgun_player.png")
 
     # when the player picks up a pickup
     def picked_up(self, t):
         if t == "coin":
-            globals.score += 1
+            globals.score += 1 * globals.level
 
         if t == "health":
             self.health += 15
@@ -97,7 +97,7 @@ class Player(BaseSprite):
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
-            globals.messages.warning = "GET BACK INTO THE MAP! YOUR HEALTH IS: " + str(int(self.health))
+            globals.messages.warning = "GET BACK INTO THE MAP!"
         
         else:
             globals.messages.warning = ""

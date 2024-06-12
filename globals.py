@@ -23,6 +23,7 @@ class globals:
     player_bullets = pygame.sprite.Group()
     enemy_bullets = pygame.sprite.Group()
     pickups = pygame.sprite.Group()
+    uis = pygame.sprite.Group()
     healths = []
 
     # max healths
@@ -34,6 +35,9 @@ class globals:
     # display message system and camera
     messages = Messages(WIDTH, HEIGHT)
     game_cam = Camera(WIDTH, HEIGHT)
+
+    #difficulty
+    level = None
 
     # a rect the size of the game map for collision and etc
     map_rect = pygame.Rect(0, 0, MAP_WIDTH, MAP_HEIGHT)

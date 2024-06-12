@@ -8,6 +8,7 @@ from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.background import Background
 from sprites.pickup import Pickup
+from sprites.ui.Text import Text
 from globals import globals
 import random
 from timer import Timer
@@ -34,6 +35,7 @@ def update_sprites():
     globals.player_bullets.update()
     globals.enemy_bullets.update()
     globals.pickups.update()
+    globals.uis.update()
 
 # to draw all sprites
 def draw_sprites():
@@ -43,6 +45,7 @@ def draw_sprites():
     globals.player_bullets.draw(game_map)
     globals.enemy_bullets.draw(game_map)
     globals.pickups.draw(game_map)
+    globals.uis.draw(game_display)
     
     for i in globals.healths:
         i.draw(game_map)
@@ -78,13 +81,14 @@ status_timer.lock()
 
 pygame.mouse.set_visible(False)
 
-level = None
 level_scale = None
 
 score_change = 0
 prev_score = 0
 
 globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
+
+# Text("please work")
 
 while not (dead):
     for event in pygame.event.get():
@@ -94,15 +98,15 @@ while not (dead):
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
                 dead = True
-            if level == None:
+            if globals.level == None:
                 if event.key == pygame.K_1:
-                    level = 1
+                    globals.level = 1
                     level_scale = 1.8
                 if event.key == pygame.K_2:
-                    level = 2
+                    globals.level = 2
                     level_scale = 2
                 if event.key == pygame.K_3:
-                    level = 3
+                    globals.level = 3
                     level_scale = 2.2
 
     # main player life status
@@ -110,7 +114,7 @@ while not (dead):
         level = None
 
         globals.messages.warning = ""
-        globals.messages.game_status = "YOU DIED GAME OVER!"
+        globals.messages.game_status = "YOU DIED GAME OVER! YOUR SCORE: " + str(globals.score)
 
         enemy_spawner.lock()
         health_spawner.lock()
@@ -175,7 +179,7 @@ while not (dead):
         gun_spawner.reset()
 
     # update all sprites
-    if level != None:
+    if globals.level != None:
         enemy_spawner.unlock()
         health_spawner.unlock()
         gun_spawner.unlock()
@@ -204,7 +208,7 @@ while not (dead):
     game_display.blit(cursor_image, cursor_rect)
 
     # for display messages
-    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(level) + ", Bullets: " + str(main_player.bullets)
+    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(globals.level) + ", Bullets: " + str(main_player.bullets)
     globals.messages.draw(game_display)
 
     pygame.display.flip()

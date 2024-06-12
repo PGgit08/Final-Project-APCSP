@@ -27,6 +27,7 @@ class BaseSprite(pygame.sprite.Sprite):
     def __init__(self, group) -> None:
         super().__init__(group)
     
+    
     # change the image for the sprite
     def change_image(self, image_path):
         self.image = pygame.image.load(os.getcwd() + image_path)

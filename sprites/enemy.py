@@ -67,7 +67,7 @@ class Enemy(BaseSprite):
         
         if hit_bullets: # Takes damage from bullet
             if "pistol" in hit_bullets: self.health -= 12
-            else: self.health -= 6
+            else: self.health -= 8
         
         if (self.health <= 0):
             self.kill()
