@@ -58,5 +58,5 @@ class globals:
         return len(list(filter(lambda p: p.type == type, globals.pickups.sprites())))
 
     @staticmethod
-    def clamp(val, min, max):
-        return math.max(math.min(min, val), max)
+    def clamp(val, lower, upper):
+        return min(max(lower, val), upper)
