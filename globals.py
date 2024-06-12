@@ -1,7 +1,5 @@
 import pygame
 from camera import Camera
-from messages import Messages
-import math
 
 # all global variables are in this class
 class globals:
@@ -32,8 +30,7 @@ class globals:
     # the amount of enemies killed
     score = 0
 
-    # display message system and camera
-    messages = Messages(WIDTH, HEIGHT)
+    # game camera (which will follow player)
     game_cam = Camera(WIDTH, HEIGHT)
 
     #difficulty

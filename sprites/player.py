@@ -6,6 +6,7 @@ from .bullet import Bullet
 from .base_sprite import BaseSprite
 from sprites.healthbar import Health
 import random
+from sprites.ui.Text import Text
 
 class Player(BaseSprite):
     speed = 0.8
@@ -19,12 +20,16 @@ class Player(BaseSprite):
 
     bullets = 0
 
+    player_warning = None
+
     def __init__(self):
         super().__init__(globals.players)
 
         self.offset_angle = 180
 
         self.change_gun("pistol")
+
+        self.player_warning = Text("", "Poppins", (255, 255, 0), 50, pygame.Vector2(400, 400), bold=False)
 
         # create healthbar for this player
         h = Health(self)
@@ -99,10 +104,10 @@ class Player(BaseSprite):
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
-            globals.messages.warning = "GET BACK INTO THE MAP!"
-        
+            self.player_warning.text = "COME BACK TO THE MAP!!!"
+
         else:
-            globals.messages.warning = ""
+            self.player_warning.text = ""
 
         ## input code
         keys = pygame.key.get_pressed() 

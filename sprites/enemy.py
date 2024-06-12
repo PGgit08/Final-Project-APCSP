@@ -95,6 +95,6 @@ class Enemy(BaseSprite):
                 self.timer.reset()
 
         else:
-            self.angle += random.randint(0, 1)
+            self.angle += 0.5
 
         self.transform()

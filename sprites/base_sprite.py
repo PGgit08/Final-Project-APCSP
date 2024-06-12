@@ -28,17 +28,19 @@ class BaseSprite(pygame.sprite.Sprite):
     # the path for this sprite's image
     image_src = None
 
-    def __init__(self, group) -> None:
+    def __init__(self, group):
         super().__init__(group)
     
     
     # loads the surface for this sprite
     # if image_src is none, then a rectangle of given specified width/height is created
-    def load_surface(self, width=None, height=None):
-        self.image = pygame.image.load(os.getcwd() + self.image_src)
+    def load_surface(self, color=None):
+        if (self.image_src != None):
+            self.image = pygame.image.load(os.getcwd() + self.image_src)
 
-        if (self.image_src == None):
-            self.image = pygame.Surface((width, height))
+        else:
+            self.image = pygame.Surface((self.width, self.height))
+            self.image.fill(color)
 
         # original image is a scaled down non-rotated image of the player
         self.original_image = pygame.transform.rotate(self.image, self.offset_angle)
@@ -47,7 +49,7 @@ class BaseSprite(pygame.sprite.Sprite):
         # set image to the original image
         self.image = self.original_image
         self.image.set_colorkey(self.colorkey)
-        self.image = pygame.Surface.convert_alpha(self.image)
+        self.image.convert_alpha()
 
         self.rect = self.image.get_rect(center=self.pos)
 

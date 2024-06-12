@@ -45,7 +45,6 @@ def draw_sprites():
     globals.player_bullets.draw(game_map)
     globals.enemy_bullets.draw(game_map)
     globals.pickups.draw(game_map)
-    globals.uis.draw(game_display)
     
     for i in globals.healths:
         i.draw(game_map)
@@ -86,9 +85,8 @@ level_scale = None
 score_change = 0
 prev_score = 0
 
-globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
-
-# Text("please work")
+# ui stuff
+status_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
 
 while not (dead):
     for event in pygame.event.get():
@@ -109,12 +107,12 @@ while not (dead):
                     globals.level = 3
                     level_scale = 2.2
 
+    # update ui
+    status_text.text = "Bullets: " + str(main_player.bullets) + ", Score: " + str(globals.score)
+
     # main player life status
     if not main_player.alive():
         level = None
-
-        globals.messages.warning = ""
-        globals.messages.game_status = "YOU DIED GAME OVER! YOUR SCORE: " + str(globals.score)
 
         enemy_spawner.lock()
         health_spawner.lock()
@@ -186,7 +184,6 @@ while not (dead):
         status_timer.unlock()
 
         globals.difficulty_change = level_scale * score_change
-        globals.messages.game_status = ""
 
         # update all sprites
         update_sprites()
@@ -202,14 +199,13 @@ while not (dead):
     game_display.fill((128, 128, 128))
     game_display.blit(game_map, cam_offsets)
 
+    # draw ui
+    globals.uis.draw(game_display)
+
     # draw cursor
     cursor_rect = cursor_image.get_rect()
     cursor_rect.center = pygame.mouse.get_pos()
     game_display.blit(cursor_image, cursor_rect)
-
-    # for display messages
-    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(globals.level) + ", Bullets: " + str(main_player.bullets)
-    globals.messages.draw(game_display)
 
     pygame.display.flip()
 
