@@ -10,7 +10,9 @@ class Background(BaseSprite):
         self.width = globals.WIDTH
         self.height = globals.HEIGHT
 
-        self.change_image("/assets/background.png")
+        self.image_src = "/assets/background.png"
+
+        self.load_surface()
     
     def update(self):
         self.transform()

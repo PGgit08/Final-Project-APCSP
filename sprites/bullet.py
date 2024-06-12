@@ -23,7 +23,8 @@ class Bullet(BaseSprite):
 
         self.offset_angle = 90
 
-        self.change_image("/assets/bullet.png")
+        self.image_src = "/assets/bullet.png"
+        self.load_surface()
 
     def update(self):
         # constant movement by direction vector code

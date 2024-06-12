@@ -32,14 +32,16 @@ class Enemy(BaseSprite):
             self.speed = 0.4
             self.max_health = 40
 
-            self.change_image("/assets/enemies/pistol_enemy.png")
+            self.image_src = "/assets/enemies/pistol_enemy.png"
         
         if self.gun == "shotgun":
             self.height = 180
             self.speed = 0.04
             self.max_health = 120
 
-            self.change_image("/assets/enemies/shotgun_enemy.png")
+            self.image_src = "/assets/enemies/shotgun_enemy.png"
+
+        self.load_surface()
 
         self.health = self.max_health
 

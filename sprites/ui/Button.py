@@ -9,7 +9,7 @@ class Button(BaseSprite):
         self.text = text
         
         self.font = pygame.font.SysFont("Poppins", 14)
-        self.change_image("/assets/button.png")
+        self.load_surface("/assets/button.png")
         
     
 

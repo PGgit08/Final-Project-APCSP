@@ -22,15 +22,23 @@ class BaseSprite(pygame.sprite.Sprite):
     # the angle to offset the image by
     offset_angle = 0
 
+    # the original image for this sprite
     original_image = None
+
+    # the path for this sprite's image
+    image_src = None
 
     def __init__(self, group) -> None:
         super().__init__(group)
     
     
-    # change the image for the sprite
-    def change_image(self, image_path):
-        self.image = pygame.image.load(os.getcwd() + image_path)
+    # loads the surface for this sprite
+    # if image_src is none, then a rectangle of given specified width/height is created
+    def load_surface(self, width=None, height=None):
+        self.image = pygame.image.load(os.getcwd() + self.image_src)
+
+        if (self.image_src == None):
+            self.image = pygame.Surface((width, height))
 
         # original image is a scaled down non-rotated image of the player
         self.original_image = pygame.transform.rotate(self.image, self.offset_angle)

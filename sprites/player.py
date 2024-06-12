@@ -56,13 +56,15 @@ class Player(BaseSprite):
             self.height = 150
             self.speed = 0.80
             self.bullets = 15
-            self.change_image("/assets/players/pistol_player.png")
+            self.image_src = "/assets/players/pistol_player.png"
 
         if self.gun == "shotgun":
             self.height = 190
             self.speed = 0.60
             self.bullets = 8
-            self.change_image("/assets/players/shotgun_player.png")
+            self.image_src = "/assets/players/shotgun_player.png"
+        
+        self.load_surface()
 
     # when the player picks up a pickup
     def picked_up(self, t):
