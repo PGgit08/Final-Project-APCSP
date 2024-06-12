@@ -34,7 +34,7 @@ class Messages:
         
         if self.score != "":
             score_text = self.render_text(self.score, (0, 240, 0))
-            surface.blit(score_text, (self.swidth - 500, 10))
+            surface.blit(score_text, (self.swidth - 700, 10))
 
         if self.game_status != "":
             game_status_text = self.render_text(self.game_status, (0, 0, 0))

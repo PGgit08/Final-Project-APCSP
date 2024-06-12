@@ -17,6 +17,8 @@ class Player(BaseSprite):
 
     gun = None
 
+    bullets = 0
+
     def __init__(self):
         super().__init__(globals.players)
 
@@ -30,8 +32,10 @@ class Player(BaseSprite):
 
     # creates a new bullet
     def create_bullet(self):
-        if self.mouse_clicked:
+        if self.mouse_clicked or self.bullets <= 0:
             return
+        
+        self.bullets -= 1
 
         if self.gun == "pistol":
             Bullet(self.angle, pygame.Vector2(self.pos.x, self.pos.y), self.gun, globals.player_bullets)
@@ -49,10 +53,13 @@ class Player(BaseSprite):
         if self.gun == "pistol":
             self.height = 150
             self.speed = 0.80
+            self.bullets = 15
             self.change_image("/assets/players/pistol_player.png")
+
         if self.gun == "shotgun":
             self.height = 190
             self.speed = 0.50
+            self.bullets = 8
             self.change_image("/assets/players/shotgun_player.png")
 
     # when the player picks up a pickup

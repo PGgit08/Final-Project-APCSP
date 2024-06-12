@@ -13,6 +13,8 @@ class globals:
     MAP_WIDTH = WIDTH * 2
     MAP_HEIGHT = HEIGHT * 2
 
+    pygame.mixer
+
     # all sprite groups
     backgrounds = pygame.sprite.Group()
     players = pygame.sprite.Group()
@@ -34,6 +36,10 @@ class globals:
 
     # a rect the size of the game map for collision and etc
     map_rect = pygame.Rect(0, 0, MAP_WIDTH, MAP_HEIGHT)
+
+
+    # the difficulty the game is currently at [1, 10]
+    difficulty_change = 1
 
     @staticmethod
     # get the mouse position after camera transformations

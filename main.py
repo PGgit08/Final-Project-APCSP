@@ -10,7 +10,7 @@ from sprites.pickup import Pickup
 from globals import globals
 import random
 from timer import Timer
-import time
+import json
 
 game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
 game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
@@ -53,30 +53,37 @@ for i in range(globals.MAP_WIDTH // globals.WIDTH):
         Background(((i * globals.WIDTH) + (globals.WIDTH / 2), (j * globals.HEIGHT) + (globals.HEIGHT / 2)))
 
 # creates this computer's player and attaches the camera to it
-p = Player()
-globals.game_cam.target = p
+main_player = Player()
+globals.game_cam.target = main_player
 
 # create all timers
-start_time = time.time()
-
 enemy_spawner = Timer()
 enemy_spawner.lock()
+enemy_countdown = 5
+max_enemies = 1
 
 health_spawner = Timer()
 health_spawner.lock()
-health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
+health_countdown = 3
+max_healths = 8
 
 gun_spawner = Timer()
 gun_spawner.lock()
-# gun_countdown = random.randint(10, 25)
-gun_countdown = 3
+gun_countdown = 1
+max_guns = 8
+
+status_timer = Timer()
+status_timer.lock()
 
 pygame.mouse.set_visible(False)
 
-globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
-
 level = None
-enemy_countdown = 5 - ((time.time() // start_time) / 100) + (globals.score / 10)
+level_scale = None
+
+score_change = 0
+prev_score = 0
+
+globals.messages.game_status = "Welcome to (name)! WASD to move, left click to shoot. Please select level (click 1 for easy, 2 for medium, 3 for hard)."
 
 while not (dead):
     for event in pygame.event.get():
@@ -89,71 +96,100 @@ while not (dead):
             if level == None:
                 if event.key == pygame.K_1:
                     level = 1
+                    level_scale = 1.8
                 if event.key == pygame.K_2:
                     level = 2
+                    level_scale = 2
                 if event.key == pygame.K_3:
                     level = 3
+                    level_scale = 2.2
 
     # main player life status
-    if not p.alive():
+    if not main_player.alive():
         level = None
+
         globals.messages.warning = ""
         globals.messages.game_status = "YOU DIED GAME OVER!"
+
         enemy_spawner.lock()
+        health_spawner.lock()
+        gun_spawner.lock()
+        status_timer.lock()
+
+    # print status
+    if (status_timer.has_elapsed(5)):
+        os.system('cls')
+
+        print(json.dumps({
+            "enemy countdown": enemy_countdown,
+            "max enemies": max_enemies,
+            "gun countdown": gun_countdown,
+            "max guns": max_guns,
+            "healths countdown": health_countdown,
+            "max healths": max_healths,
+            "difficulty change": globals.difficulty_change
+        }, indent=2), end="\n")
+
+        status_timer.reset()
+
+    # enemy spawning
+    if (enemy_spawner.has_elapsed(enemy_countdown) and len(globals.enemies.sprites()) < max_enemies):
+        Enemy(pygame.Vector2(
+            random.randint(0, globals.MAP_WIDTH),
+            random.randint(0, globals.MAP_HEIGHT)
+        ), random.choice(["pistol", "shotgun"]))
+
+        score_change = globals.score - prev_score 
+        prev_score = globals.score
+        enemy_countdown = globals.clamp(enemy_countdown - globals.difficulty_change / 50, 1, 10)
+        max_enemies = globals.clamp(round(max_enemies + globals.difficulty_change / 6), 0, 5)
+
+        enemy_spawner.reset()
+
+    # medkit spawning
+    if (health_spawner.has_elapsed(health_countdown) and globals.get_pickups_by_type("health") < max_healths):
+        Pickup("/assets/pickups/medkit.png", "health", pygame.Vector2(
+            random.randint(0, globals.MAP_WIDTH),
+            random.randint(0, globals.MAP_HEIGHT)
+        ), 100, 100, colorkey=(0, 255, 0))
+
+        health_countdown = globals.clamp(health_countdown + globals.difficulty_change / 50, 1, 10)
+        max_healths = globals.clamp(round(max_healths - globals.difficulty_change / 4), 3, 10)
+
+        health_spawner.reset()
+
+    # gun spawning (only allow for 2 guns at a time)
+    if (gun_spawner.has_elapsed(gun_countdown) and (globals.get_pickups_by_type("pistol") + globals.get_pickups_by_type("shotgun")) < max_guns):
+        gun = random.choice([
+            ["pistol", (100, 50)], ["shotgun", (150, 50)]
+        ])
+
+        Pickup("/assets/pickups/" + gun[0] + ".png", gun[0], pygame.Vector2(
+            random.randint(0, globals.MAP_WIDTH),
+            random.randint(0, globals.MAP_HEIGHT)
+        ), *gun[1])
+
+        gun_countdown = globals.clamp(gun_countdown + globals.difficulty_change / 50, 1, 10)
+        max_guns = globals.clamp(round(max_guns - globals.difficulty_change / 4), 3, 10)
+        gun_spawner.reset()
 
     # update all sprites
     if level != None:
         enemy_spawner.unlock()
         health_spawner.unlock()
         gun_spawner.unlock()
+        status_timer.unlock()
 
-        # enemy spawning (only allow for 5 at a time, this could change tho)
-        if (enemy_spawner.has_elapsed(enemy_countdown) and len(globals.enemies.sprites()) < 5):
-            Enemy(pygame.Vector2(
-                random.randint(0, globals.MAP_WIDTH),
-                random.randint(0, globals.MAP_HEIGHT)
-            ), "pistol")
-
-            enemy_countdown = globals.clamp(5 - ((time.time() // start_time) / 100) * (1 + (level / 10)) + (globals.score / 10), 0.4, 5)
-            enemy_spawner.reset()
-
-            print(enemy_countdown)
-
-        # medkit spawning (only allow for 3 at a time)
-        if (health_spawner.has_elapsed(health_countdown) and globals.get_pickups_by_type("health") < 3):
-            health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
-
-            Pickup("/assets/pickups/medkit.png", "health", pygame.Vector2(
-                random.randint(0, globals.MAP_WIDTH),
-                random.randint(0, globals.MAP_HEIGHT)
-            ), 100, 100, colorkey=(0, 255, 0))
-
-            health_countdown = 15 - (globals.PLAYER_MAX_HEALTH / p.health)
-            health_spawner.reset()
-
-        # gun spawning (only allow for 2 guns at a time)
-        if (gun_spawner.has_elapsed(gun_countdown) and (globals.get_pickups_by_type("pistol") + globals.get_pickups_by_type("shotgun")) < 2):
-            gun_countdown = random.randint(10, 25)
-            gun = random.choice([
-                ["pistol", (100, 50)], ["shotgun", (150, 50)]
-            ])
-
-            Pickup("/assets/pickups/" + gun[0] + ".png", gun[0], pygame.Vector2(
-                random.randint(0, globals.MAP_WIDTH),
-                random.randint(0, globals.MAP_HEIGHT)
-            ), *gun[1])
-
-            # gun_countdown = random.randint(10, 25)
-            gun_countdown = 3
-            gun_spawner.reset()
-
+        globals.difficulty_change = level_scale * score_change
         globals.messages.game_status = ""
 
+        # update all sprites
         update_sprites()
 
     # clear game map and draw on it
     game_map.fill((0, 0, 0))
-
+    
+    # draw all sprites
     draw_sprites()
 
     # draw game map onto game display based on cam position
@@ -167,7 +203,7 @@ while not (dead):
     game_display.blit(cursor_image, cursor_rect)
 
     # for display messages
-    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(level)
+    globals.messages.score = "Score: " + str(globals.score) + ", High Score: " + str(high_score) + ", Level: " + str(level) + ", Bullets: " + str(main_player.bullets)
     globals.messages.draw(game_display)
 
     pygame.display.flip()
