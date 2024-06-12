@@ -3,7 +3,7 @@ from base_sprite import BaseSprite
 
 class Button(BaseSprite):
     
-    def __init__(self, group, text):
+    def __init__(self, group, text, font, color, size, pos, bold=False):
         super().__init__(group)
 
         self.text = text

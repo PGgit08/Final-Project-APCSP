@@ -8,7 +8,8 @@ from sprites.player import Player
 from sprites.enemy import Enemy
 from sprites.background import Background
 from sprites.pickup import Pickup
-from sprites.ui.Text import Text
+from sprites.ui.text import Text
+from sprites.ui.image import Image
 from globals import globals
 import random
 from timer import Timer
@@ -86,7 +87,11 @@ score_change = 0
 prev_score = 0
 
 # ui stuff
-status_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
+score_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
+bullets_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(globals.WIDTH - 40, globals.HEIGHT - 50))
+
+
+Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
 
 while not (dead):
     for event in pygame.event.get():
@@ -108,9 +113,10 @@ while not (dead):
                     level_scale = 2.2
 
     # update ui
-    status_text.text = "Bullets: " + str(main_player.bullets) + ", Score: " + str(globals.score)
+    score_text.text = "Score: "+ str(globals.score)
+    bullets_text.text = str(main_player.bullets) + "/0"
 
-    # main player life status
+    # if dead, end the game updating
     if not main_player.alive():
         level = None
 
@@ -161,7 +167,7 @@ while not (dead):
 
         health_spawner.reset()
 
-    # gun spawning (only allow for 2 guns at a time)
+    # gun spawning
     if (gun_spawner.has_elapsed(gun_countdown) and (globals.get_pickups_by_type("pistol") + globals.get_pickups_by_type("shotgun")) < max_guns):
         gun = random.choice([
             ["pistol", (100, 50)], ["shotgun", (150, 50)]

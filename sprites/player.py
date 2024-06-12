@@ -6,7 +6,8 @@ from .bullet import Bullet
 from .base_sprite import BaseSprite
 from sprites.healthbar import Health
 import random
-from sprites.ui.Text import Text
+from sprites.ui.text import Text
+from sprites.ui.image import Image
 
 class Player(BaseSprite):
     speed = 0.8
@@ -37,7 +38,11 @@ class Player(BaseSprite):
 
     # creates a new bullet
     def create_bullet(self):
-        if self.mouse_clicked or self.bullets <= 0:
+        if self.mouse_clicked:
+            return
+        
+        if self.bullets <= 0:
+            globals.empty_clip_sound.play()
             return
         
         self.bullets -= 1
@@ -74,6 +79,7 @@ class Player(BaseSprite):
     # when the player picks up a pickup
     def picked_up(self, t):
         if t == "coin":
+            globals.coin_sound.play()
             globals.score += 1 * globals.level
 
         if t == "health":
@@ -100,6 +106,9 @@ class Player(BaseSprite):
             else: self.health -= 5
         
         if (self.health <= 0):
+            Image(None, pygame.Vector2(globals.WIDTH/2, globals.HEIGHT/2), globals.WIDTH, globals.HEIGHT, alpha=100, bg_color=(0, 0, 0))
+            Image("/assets/game_over.png", pygame.Vector2(525, 250), 450, 450, colorkey=(0, 255, 0))
+            
             self.kill()
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):

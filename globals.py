@@ -13,6 +13,11 @@ class globals:
 
     shoot_sound = pygame.mixer.Sound("./assets/sounds/shoot.wav")
     damage_sound = pygame.mixer.Sound("./assets/sounds/damage.wav")
+    coin_sound = pygame.mixer.Sound("./assets/sounds/coin_pickup.wav")
+    coin_sound.set_volume(0.5)
+    
+    empty_clip_sound = pygame.mixer.Sound("./assets/sounds/empty_gun.wav")
+
 
     # all sprite groups
     backgrounds = pygame.sprite.Group()
