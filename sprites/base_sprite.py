@@ -3,34 +3,34 @@ import os
 
 # base sprite for all sprites in this game
 class BaseSprite(pygame.sprite.Sprite):
-    # the sprite's position
-    pos = pygame.Vector2(0, 0) 
-
-    # width
-    width = 100
-
-    # height
-    height = 100
-
-    # colorkey
-    colorkey = (255, 255, 255)
-
-    # the sprite's angle
-    angle = 0
-    old_angle = 0
-
-    # the angle to offset the image by
-    offset_angle = 0
-
-    # the original image for this sprite
-    original_image = None
-
-    # the path for this sprite's image
-    image_src = None
-
     def __init__(self, group):
         super().__init__(group)
-    
+
+        # the sprite's position
+        self.pos = pygame.Vector2(0, 0) 
+
+        # width
+        self.width = 100
+
+        # height
+        self.height = 100
+
+        # colorkey
+        self.colorkey = (255, 255, 255)
+
+        # the sprite's angle
+        self.angle = 0
+        self.old_angle = 0
+
+        # the angle to offset the image by
+        self.offset_angle = 0
+
+        # the original image for this sprite
+        self.original_image = None
+
+        # the path for this sprite's image
+        self.image_src = None
+
     
     # loads the surface for this sprite
     # if image_src is none, then a rectangle of given specified width/height is created

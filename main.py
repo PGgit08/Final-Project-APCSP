@@ -92,10 +92,40 @@ bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH -
 
 Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
 
+# to reset everything
 def reset():
-    print("WILL RESET")
+    global main_player, gun_countdown, health_countdown, enemy_countdown, max_enemies, max_healths, max_guns, dead, rounds, score_change, prev_score
+
+    for t in globals.trash:
+        t.kill()
+
+    globals.players.empty()
+    globals.enemies.empty()
+    globals.player_bullets.empty()
+    globals.enemy_bullets.empty()
+    globals.pickups.empty()
+
+    main_player = Player()
+    globals.game_cam.target = main_player
+
+    enemy_countdown = 5
+    health_countdown = 3
+    gun_countdown = 1
+
+    max_enemies = 1
+    max_healths = 8
+    max_guns = 8
+
+    globals.score = 0
+
+    score_change = 0
+    prev_score = 0
+
+    dead = False
+    rounds += 1
 
 globals.reset = reset
+rounds = 0
 
 while not (dead):
     for event in pygame.event.get():
@@ -124,8 +154,6 @@ while not (dead):
 
     # if dead, end the game updating
     if not main_player.alive():
-        level = None
-
         enemy_spawner.lock()
         health_spawner.lock()
         gun_spawner.lock()
@@ -133,9 +161,10 @@ while not (dead):
 
     # print status
     if (status_timer.has_elapsed(5)):
-        # os.system('cls')
+        os.system('cls')
 
         print(json.dumps({
+            "round": rounds,
             "enemy countdown": enemy_countdown,
             "max enemies": max_enemies,
             "gun countdown": gun_countdown,
@@ -157,7 +186,7 @@ while not (dead):
         score_change = globals.score - prev_score 
         prev_score = globals.score
         enemy_countdown = globals.clamp(enemy_countdown - globals.difficulty_change / 50, 1, 10)
-        max_enemies = globals.clamp(round(max_enemies + globals.difficulty_change / 6), 0, 5)
+        max_enemies = globals.clamp(round(max_enemies + globals.difficulty_change / 6), 1, 5)
 
         enemy_spawner.reset()
 

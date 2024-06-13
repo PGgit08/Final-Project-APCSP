@@ -18,6 +18,9 @@ class globals:
     
     empty_clip_sound = pygame.mixer.Sound("./assets/sounds/empty_gun.wav")
 
+    # trash when reset
+    trash = []
+
     # reset function
     reset = None
 
@@ -74,3 +77,4 @@ class globals:
     @staticmethod
     def clamp(val, lower, upper):
         return min(max(lower, val), upper)
+
