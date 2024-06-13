@@ -52,6 +52,7 @@ class Enemy(BaseSprite):
         self.timer = Timer()
         self.timer.reset()
 
+    # spawns a new bullet
     def create_bullet(self):
         globals.shoot_sound.play()
 
@@ -71,6 +72,7 @@ class Enemy(BaseSprite):
             if "pistol" in hit_bullets: self.health -= 12
             else: self.health -= 8
         
+        # death code
         if (self.health <= 0):
             self.kill()
             coin_pos = pygame.Vector2(self.pos.x, self.pos.y)

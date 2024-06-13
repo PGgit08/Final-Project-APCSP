@@ -99,15 +99,17 @@ class Player(BaseSprite):
             if "pistol" in hit_bullets: self.health -= 10 
             else: self.health -= 5
         
+        # death code
         if (self.health <= 0):
             bg = Image(None, pygame.Vector2(globals.WIDTH/2, globals.HEIGHT/2), globals.WIDTH, globals.HEIGHT, alpha=100, bg_color=(0, 0, 0))
             game_over = Image("/assets/game_over.png", pygame.Vector2(525, 250), 450, 450, colorkey=(0, 255, 0))
-            retry = Button("/assets/button.png", "RETRY?", "Aharoni", (0, 0, 0), 100, 300, 80, pygame.Vector2(525, 520), globals.reset)
+            retry = Button("/assets/brown_button.png", "RETRY?", "Aharoni", (0, 0, 0), 100, 300, 80, pygame.Vector2(525, 520), globals.reset)
 
             globals.trash.extend([bg, game_over, retry, self.player_warning])
 
             self.kill()
 
+        # off map code
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):
             self.health -= 0.1
             self.player_warning.text = "COME BACK TO THE MAP!!!"

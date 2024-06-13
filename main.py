@@ -16,6 +16,7 @@ import random
 from timer import Timer
 import json
 
+# display setup
 game_display = pygame.display.set_mode((globals.WIDTH, globals.HEIGHT))
 game_map = pygame.Surface((globals.MAP_WIDTH, globals.MAP_HEIGHT))
 
@@ -25,9 +26,39 @@ cursor_image.set_colorkey((255, 255, 255))
 
 pygame.display.set_caption("Shotgun Sunday")
 
-high_score = int(open("high_score.txt", "r").readlines()[0])
+globals.high_score = int(open("high_score.txt", "r").readlines()[0])
 
 dead = False
+
+# resets the gameplay ui after a full reset
+def ui_reset():
+    global score_text, bullets_text, bullets_img
+
+    globals.empty_trash()
+
+    score_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
+    bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH - 130, globals.HEIGHT - 30))
+    bullets_img = Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
+
+    globals.trash.extend([score_text, bullets_text, bullets_img])
+
+# easy level onclick
+def easy_level():
+    globals.level = 1
+    globals.level_scale = 1.8
+    ui_reset()
+
+# medium level onclick
+def med_level():
+    globals.level = 2
+    globals.level_scale = 2
+    ui_reset()
+
+# hard level onclick
+def hard_level():
+    globals.level = 3
+    globals.level_scale = 2.2
+    ui_reset()
 
 # to update all sprites
 def update_sprites():
@@ -50,10 +81,9 @@ def draw_sprites():
     for i in globals.healths:
         i.draw(game_map)
 
-## SETUP CODE
+# draw the backgrounds
 for i in range(globals.MAP_WIDTH // globals.WIDTH):
     for j in range(globals.MAP_HEIGHT // globals.HEIGHT):
-        # generates 4 backgrounds
         Background(((i * globals.WIDTH) + (globals.WIDTH / 2), (j * globals.HEIGHT) + (globals.HEIGHT / 2)))
 
 # creates this computer's player and attaches the camera to it
@@ -81,23 +111,21 @@ status_timer.lock()
 
 pygame.mouse.set_visible(False)
 
-level_scale = None
-
 score_change = 0
 prev_score = 0
 
 # ui stuff
 score_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
-bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH - 130, globals.HEIGHT - 30))
+bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH - 120, globals.HEIGHT - 30))
+bullets_img = Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
 
-Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
+globals.trash.extend([score_text, bullets_text, bullets_img])
 
 # to reset everything
 def reset():
     global main_player, gun_countdown, health_countdown, enemy_countdown, max_enemies, max_healths, max_guns, dead, rounds, score_change, prev_score
 
-    for t in globals.trash:
-        t.kill()
+    globals.empty_trash()
 
     globals.players.empty()
     globals.enemies.empty()
@@ -121,11 +149,30 @@ def reset():
     score_change = 0
     prev_score = 0
 
-    dead = False
     rounds += 1
+
+    # intro ui here TODO
+    intro = Image("/assets/intro.png", pygame.Vector2(globals.WIDTH / 2, globals.HEIGHT / 2), 1131.2, 649.6, colorkey=(9, 0, 255))
+
+    e = Button("/assets/green_button.png", "EASY", "Impact", (255, 254, 255), 50, 300, 80, pygame.Vector2((globals.WIDTH / 2) - 300, 520), easy_level)
+    m = Button("/assets/yellow_button.png", "MEDIUM", "Impact", (255, 254, 255), 50, 300, 80, pygame.Vector2(globals.WIDTH / 2, 520), med_level)
+    h = Button("/assets/red_button.png", "HARD", "Impact", (255, 255, 254), 50, 300, 80, pygame.Vector2((globals.WIDTH / 2) + 300, 520), hard_level)
+
+    globals.trash.extend([intro, e, m, h])
+
+    globals.level = None
+
+    if globals.score > globals.high_score:
+        globals.high_score = globals.score
+
+        open("high_score.txt", "w").close()
+        open("high_score.txt", "w").write(str(globals.score))
+
 
 globals.reset = reset
 rounds = 0
+
+reset()
 
 while not (dead):
     for event in pygame.event.get():
@@ -135,29 +182,11 @@ while not (dead):
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_ESCAPE:
                 dead = True
-            if globals.level == None:
-                if event.key == pygame.K_1:
-                    globals.level = 1
-                    level_scale = 1.8
-                if event.key == pygame.K_2:
-                    globals.level = 2
-                    level_scale = 2
-                if event.key == pygame.K_3:
-                    globals.level = 3
-                    level_scale = 2.2
 
     # update ui
-    score_text.text = "Score: "+ str(globals.score)
-    bullets_text.text = str(main_player.bullets) + "/0"
-
+    score_text.text = "Score: "+ str(globals.score) + ", High Score: " + str(globals.high_score)
+    bullets_text.text = str(main_player.bullets)
     globals.uis.update()
-
-    # if dead, end the game updating
-    if not main_player.alive():
-        enemy_spawner.lock()
-        health_spawner.lock()
-        gun_spawner.lock()
-        status_timer.lock()
 
     # print status
     if (status_timer.has_elapsed(5)):
@@ -217,17 +246,24 @@ while not (dead):
         max_guns = globals.clamp(round(max_guns - globals.difficulty_change / 4), 3, 10)
         gun_spawner.reset()
 
-    # update all sprites
+    # update all sprites if the level is selected
     if globals.level != None:
         enemy_spawner.unlock()
         health_spawner.unlock()
         gun_spawner.unlock()
         status_timer.unlock()
 
-        globals.difficulty_change = level_scale * score_change
+        globals.difficulty_change = globals.level_scale * score_change
 
         # update all sprites
         update_sprites()
+    
+    # lock all spawners if there is no level
+    else:
+        enemy_spawner.lock()
+        health_spawner.lock()
+        gun_spawner.lock()
+        status_timer.lock()
 
     # clear game map and draw on it
     game_map.fill((0, 0, 0))
@@ -240,7 +276,7 @@ while not (dead):
     game_display.fill((128, 128, 128))
     game_display.blit(game_map, cam_offsets)
 
-    # draw ui
+    # draw uis
     globals.uis.draw(game_display)
 
     # draw cursor
@@ -249,7 +285,3 @@ while not (dead):
     game_display.blit(cursor_image, cursor_rect)
 
     pygame.display.flip()
-
-if globals.score > high_score:
-    open("high_score.txt", "w").close()
-    open("high_score.txt", "w").write(str(globals.score))

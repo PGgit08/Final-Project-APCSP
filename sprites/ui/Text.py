@@ -3,24 +3,6 @@ from sprites.base_sprite import BaseSprite
 from globals import globals
 
 class Text(BaseSprite):
-    # text properties
-    text = None
-    font = None
-    color = None
-    bold = None
-    size = None
-    bg_color = None
-
-    # pygame text surface
-    textSurf = None
-
-    # text sizes
-    textW = None
-    textH = None
-
-    # whether to shrink this sprite's rect to the text's size
-    smallest = True
-
     def __init__(self, text, font, color, size, pos, bold=False, bg_color=(255, 255, 255)):
         super().__init__(globals.uis)
 
@@ -32,6 +14,12 @@ class Text(BaseSprite):
         self.size = size
         self.pos = pos
         
+        self.textSurf = None
+        self.textW = None
+        self.textH = None
+
+        self.smallest = True
+
         # to draw
         self.update_surface()
         self.load_surface(color=self.bg_color)

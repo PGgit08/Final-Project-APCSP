@@ -18,5 +18,3 @@ class Health:
 
         pygame.draw.rect(win, "red", (self.entity.pos.x - 45, self.entity.pos.y - 40, 75, 10))
         pygame.draw.rect(win, "green", (self.entity.pos.x - 45, self.entity.pos.y - 40, 75 * (self.entity.health / self.entity.max_health), 10))
-
-        

@@ -2,14 +2,12 @@ from sprites.ui.text import Text
 import pygame
 
 class Button(Text):
-    mouse_clicked = False
-    onclick = None
-
     def __init__(self, src, text, font, color, size, width, height, pos, onclick, bold=False):
         super().__init__(text, font, color, size, pos, bold=bold)
 
         self.image_src = src
 
+        self.mouse_clicked = pygame.mouse.get_pressed()[0]
         self.onclick = onclick
         
         self.width = width
@@ -27,6 +25,7 @@ class Button(Text):
         mouse = pygame.mouse.get_pressed()
         mouse_pos = pygame.mouse.get_pos()
 
+        # click detection
         if  self.rect.collidepoint(mouse_pos) and self.mouse_clicked and mouse[0]:
             pass
     
