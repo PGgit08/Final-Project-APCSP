@@ -144,6 +144,12 @@ def reset():
     max_healths = 8
     max_guns = 8
 
+    if globals.score > globals.high_score:
+        globals.high_score = globals.score
+
+        open("high_score.txt", "w").close()
+        open("high_score.txt", "w").write(str(globals.score))
+
     globals.score = 0
 
     score_change = 0
@@ -161,12 +167,6 @@ def reset():
     globals.trash.extend([intro, e, m, h])
 
     globals.level = None
-
-    if globals.score > globals.high_score:
-        globals.high_score = globals.score
-
-        open("high_score.txt", "w").close()
-        open("high_score.txt", "w").write(str(globals.score))
 
 
 globals.reset = reset
