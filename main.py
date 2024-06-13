@@ -10,6 +10,7 @@ from sprites.background import Background
 from sprites.pickup import Pickup
 from sprites.ui.text import Text
 from sprites.ui.image import Image
+from sprites.ui.button import Button
 from globals import globals
 import random
 from timer import Timer
@@ -36,7 +37,6 @@ def update_sprites():
     globals.player_bullets.update()
     globals.enemy_bullets.update()
     globals.pickups.update()
-    globals.uis.update()
 
 # to draw all sprites
 def draw_sprites():
@@ -88,9 +88,12 @@ prev_score = 0
 
 # ui stuff
 score_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
-bullets_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(globals.WIDTH - 40, globals.HEIGHT - 50))
+bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH - 130, globals.HEIGHT - 30))
 
+def poop_click():
+    print("POOP CLICK")
 
+Button("/assets/button.png", "Poop", "Poppins", (255, 255, 0), 100, pygame.Vector2(100, 100), poop_click)
 Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
 
 while not (dead):
@@ -116,6 +119,8 @@ while not (dead):
     score_text.text = "Score: "+ str(globals.score)
     bullets_text.text = str(main_player.bullets) + "/0"
 
+    globals.uis.update()
+
     # if dead, end the game updating
     if not main_player.alive():
         level = None
@@ -127,7 +132,7 @@ while not (dead):
 
     # print status
     if (status_timer.has_elapsed(5)):
-        os.system('cls')
+        # os.system('cls')
 
         print(json.dumps({
             "enemy countdown": enemy_countdown,

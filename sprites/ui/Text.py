@@ -14,6 +14,10 @@ class Text(BaseSprite):
     # pygame text surface
     textSurf = None
 
+    # text sizes
+    textW = None
+    textH = None
+
     def __init__(self, text, font, color, size, pos, bold=False, bg_color=(255, 255, 255)):
         super().__init__(globals.uis)
 
@@ -24,23 +28,33 @@ class Text(BaseSprite):
         self.bg_color = bg_color
         self.size = size
         self.pos = pos
-
-        self.draw_text()
-
-    def draw_text(self):
-        textSurf = pygame.font.SysFont(self.font, self.size, bold=self.bold).render(self.text, True, self.color)
-
-        textW = textSurf.get_width()
-        textH = textSurf.get_height()
-
-        self.width = textW
-        self.height = textH
-
+        
+        # to draw
+        self.resize_text()
         self.load_surface(color=self.bg_color)
+        self.blit_text()
 
-        self.image.blit(textSurf, (0, 0))
+    # to resize rect for this text
+    def resize_text(self):
+        self.textSurf = pygame.font.SysFont(self.font, self.size, bold=self.bold).render(self.text, True, self.color)
+
+        self.textW = self.textSurf.get_width()
+        self.textH = self.textSurf.get_height()
+
+        self.width = self.textW
+        self.height = self.textH
+
+    # to blit text in the correct location
+    def blit_text(self):
+        self.image.blit(
+            self.textSurf,
+            ((self.width - self.textW) / 2, (self.height - self.textH) / 2)
+        )
 
     def update(self):
-        self.draw_text()
+        # to draw
+        self.resize_text()
+        self.load_surface(color=self.bg_color)
+        self.blit_text()
 
         self.transform()
