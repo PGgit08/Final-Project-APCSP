@@ -18,6 +18,8 @@ class globals:
     
     empty_clip_sound = pygame.mixer.Sound("./assets/sounds/empty_gun.wav")
 
+    # reset function
+    reset = None
 
     # all sprite groups
     backgrounds = pygame.sprite.Group()

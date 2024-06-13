@@ -5,19 +5,20 @@ class Button(Text):
     mouse_clicked = False
     onclick = None
 
-    def __init__(self, src, text, font, color, size, pos, onclick, bold=False):
+    def __init__(self, src, text, font, color, size, width, height, pos, onclick, bold=False):
         super().__init__(text, font, color, size, pos, bold=bold)
 
         self.image_src = src
 
         self.onclick = onclick
+        
+        self.width = width
+        self.height = height
+        
+        self.smallest = False
 
         # to draw
-        self.resize_text()
-
-        self.width += 40
-        self.height += 10
-        
+        self.update_surface()
         self.load_surface()
         self.blit_text()
     
@@ -36,13 +37,8 @@ class Button(Text):
         else:
             self.mouse_clicked = False
 
-
         # to draw
-        self.resize_text()
-
-        self.width += 40
-        self.height += 10
-        
+        self.update_surface()
         self.load_surface()
         self.blit_text()
 

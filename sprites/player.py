@@ -8,6 +8,7 @@ from sprites.healthbar import Health
 import random
 from sprites.ui.text import Text
 from sprites.ui.image import Image
+from sprites.ui.button import Button
 
 class Player(BaseSprite):
     speed = 0.8
@@ -94,7 +95,6 @@ class Player(BaseSprite):
         if t == "pistol":
             self.change_gun("pistol")
 
-
     def update(self):
         ## health damage code
         hit_bullets = list(map(lambda b: b.type, pygame.sprite.spritecollide(self, globals.enemy_bullets, True)))
@@ -108,7 +108,8 @@ class Player(BaseSprite):
         if (self.health <= 0):
             Image(None, pygame.Vector2(globals.WIDTH/2, globals.HEIGHT/2), globals.WIDTH, globals.HEIGHT, alpha=100, bg_color=(0, 0, 0))
             Image("/assets/game_over.png", pygame.Vector2(525, 250), 450, 450, colorkey=(0, 255, 0))
-            
+            Button("/assets/button.png", "Retry?", "Poppins", (0, 0, 0), 50, 300, 100, pygame.Vector2(525, 500), globals.reset)
+
             self.kill()
 
         if not globals.map_rect.collidepoint(self.pos.x, self.pos.y):

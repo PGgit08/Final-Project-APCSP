@@ -23,7 +23,7 @@ cursor_image = pygame.image.load(os.getcwd() + "/assets/crosshair.png")
 cursor_image =  pygame.transform.scale(cursor_image, (42.5, 22.5))
 cursor_image.set_colorkey((255, 255, 255))
 
-pygame.display.set_caption("Untitled Shooter Game")
+pygame.display.set_caption("Shotgun Sunday")
 
 high_score = int(open("high_score.txt", "r").readlines()[0])
 
@@ -90,11 +90,12 @@ prev_score = 0
 score_text = Text("", "Poppins", (0, 0, 0), 40, pygame.Vector2(850, 30))
 bullets_text = Text("", "Poppins", (0, 0, 0), 80, pygame.Vector2(globals.WIDTH - 130, globals.HEIGHT - 30))
 
-def poop_click():
-    print("POOP CLICK")
-
-Button("/assets/button.png", "Poop", "Poppins", (255, 255, 0), 100, pygame.Vector2(100, 100), poop_click)
 Image("/assets/bullets.png", pygame.Vector2(globals.WIDTH - 35, globals.HEIGHT - 50), 62.5, 97.5)
+
+def reset():
+    print("WILL RESET")
+
+globals.reset = reset
 
 while not (dead):
     for event in pygame.event.get():

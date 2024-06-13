@@ -18,6 +18,9 @@ class Text(BaseSprite):
     textW = None
     textH = None
 
+    # whether to shrink this sprite's rect to the text's size
+    smallest = True
+
     def __init__(self, text, font, color, size, pos, bold=False, bg_color=(255, 255, 255)):
         super().__init__(globals.uis)
 
@@ -30,22 +33,23 @@ class Text(BaseSprite):
         self.pos = pos
         
         # to draw
-        self.resize_text()
+        self.update_surface()
         self.load_surface(color=self.bg_color)
         self.blit_text()
 
-    # to resize rect for this text
-    def resize_text(self):
+    # updates this sprite's surface with any text changes
+    def update_surface(self):
         self.textSurf = pygame.font.SysFont(self.font, self.size, bold=self.bold).render(self.text, True, self.color)
-
+        
         self.textW = self.textSurf.get_width()
         self.textH = self.textSurf.get_height()
 
-        self.width = self.textW
-        self.height = self.textH
-
     # to blit text in the correct location
     def blit_text(self):
+        if self.smallest:
+            self.width = self.textW
+            self.height = self.textH
+        
         self.image.blit(
             self.textSurf,
             ((self.width - self.textW) / 2, (self.height - self.textH) / 2)
@@ -53,7 +57,7 @@ class Text(BaseSprite):
 
     def update(self):
         # to draw
-        self.resize_text()
+        self.update_surface()
         self.load_surface(color=self.bg_color)
         self.blit_text()
 
